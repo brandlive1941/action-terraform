@@ -8,11 +8,16 @@ on:
 jobs:
   create_jira_tickets:
     if: github.actor == 'dependabot[bot]' # Only run for Dependabot PRs
+    permissions:
+      pull-requests: read    
     runs-on: ubuntu-latest
     steps:
       - name: Dependabot metadata
         id: dependabot-metadata
         uses: dependabot/fetch-metadata@v2
+        with:
+          alert-lookup: true
+          github-token: ${{ secrets.GH_TOKEN_ORG_READ }} # Use the default GitHub token for authentication
 
       - name: Issue Classification
         id: issue-classification
@@ -45,7 +50,7 @@ jobs:
           CVSS Classification: ${{ steps.issue-classification.outputs.class }}
           CVSS Score: ${{ steps.dependabot-metadata.outputs.cvss }}
           To confirm the fix, apply the patch and provide testing steps to verify no existing features are broken."
-          echo "description=$description"
+          echo "description=$description" >> "$GITHUB_OUTPUT"
           
       - name: Create Jira Ticket
         uses: brandlive1941/action-jira-integration@main  # Use the latest version
