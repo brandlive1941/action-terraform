@@ -4,9 +4,6 @@ on:
   pull_request:
     branches:
       - main # Or your default branch (e.g., main, master)
-    paths:
-      - "**/package.json" # Or any file that Dependabot updates
-      # Add other file patterns that Dependabot updates in your project
 
 jobs:
   create_jira_tickets:
