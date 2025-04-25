@@ -43,13 +43,16 @@ jobs:
       - name: Description Formatter
         id: description-formatter
         run: |
-          description="Dependabot has created a pull request to update dependencies.
+          description=$(cat << EOF
+          Dependabot has created a pull request to update dependencies.
           PR: ${{ github.event.pull_request.html_url }}
           Branch: ${{ github.head_ref }}
           Repository: ${{ github.repository }}
           CVSS Classification: ${{ steps.issue-classification.outputs.class }}
           CVSS Score: ${{ steps.dependabot-metadata.outputs.cvss }}
-          To confirm the fix, apply the patch and provide testing steps to verify no existing features are broken."
+          To confirm the fix, apply the patch and provide testing steps to verify no existing features are broken.
+          EOF
+          )
           echo "description=$description" >> "$GITHUB_OUTPUT"
           
       - name: Create Jira Ticket
