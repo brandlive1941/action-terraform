@@ -17,7 +17,7 @@ jobs:
         uses: dependabot/fetch-metadata@v2
         with:
           alert-lookup: true
-          github-token: ${{ secrets.GITHUB_TOKEN }} # Use the default GitHub token for authentication
+          github-token: "${{ secrets.GH_TOKEN_ORG_READ }}" # Use the default GitHub token for authentication
 
       - name: Issue Classification
         id: issue-classification
