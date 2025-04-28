@@ -9,7 +9,8 @@ jobs:
   create_jira_tickets:
     if: github.actor == 'dependabot[bot]' # Only run for Dependabot PRs
     permissions:
-      pull-requests: read    
+      pull-requests: write   
+      security-events: write
     runs-on: ubuntu-latest
     steps:
       - name: Dependabot metadata
@@ -17,7 +18,7 @@ jobs:
         uses: dependabot/fetch-metadata@v2
         with:
           alert-lookup: true
-          github-token: "${{ secrets.GH_TOKEN_REPO_WRITE }}"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Issue Classification
         id: issue-classification
