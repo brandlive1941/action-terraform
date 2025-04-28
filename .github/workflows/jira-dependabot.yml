@@ -11,6 +11,7 @@ jobs:
     permissions:
       pull-requests: write   
       security-events: write
+      statuses: write
     runs-on: ubuntu-latest
     steps:
       - name: Dependabot metadata
