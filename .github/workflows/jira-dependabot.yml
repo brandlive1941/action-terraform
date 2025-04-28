@@ -17,7 +17,7 @@ jobs:
         id: dependabot-metadata
         uses: dependabot/fetch-metadata@v2.3.0
         with:
-          github-token: "${{ secrets.GITHUB_TOKEN }}"
+          github-token: "${{ secrets.JIRA_GH_TOKEN }}"
           alert-lookup: true
 
       - name: Issue Classification
