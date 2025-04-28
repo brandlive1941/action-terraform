@@ -22,6 +22,7 @@ jobs:
       - name: Issue Classification
         id: issue-classification
         run: |
+          echo "CVSS score: ${{ steps.dependabot-metadata.outputs.cvss }}"
           if [ "${{ steps.dependabot-metadata.outputs.cvss }}" < "4" ]; then
             echo "CVSS score is less than 4.0"
             echo "class=Low" >> "$GITHUB_OUTPUT"
@@ -57,7 +58,7 @@ jobs:
           echo "description=$description" >> "$GITHUB_OUTPUT"
           
       - name: Create Jira Ticket
-        uses: brandlive1941/action-jira-integration@main  # Use the latest version
+        uses: brandlive1941/action-jira-integration@jira-action  # Use the latest version
         with:
           action: "create"
           token: ${{ secrets.JIRA_TOKEN }} # Store your Jira API token in GitHub Secrets
