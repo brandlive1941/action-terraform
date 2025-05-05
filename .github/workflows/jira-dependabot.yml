@@ -57,7 +57,7 @@ jobs:
           To confirm the fix, apply the patch and provide testing steps to verify no existing features are broken.
           EOF
           )
-          description="${description//$'\n'/'%0A'}"
+          description="${description//$'\n'/'\\n'}"
           echo "description=$description" >> "$GITHUB_OUTPUT"
           
       - name: Create Jira Ticket
