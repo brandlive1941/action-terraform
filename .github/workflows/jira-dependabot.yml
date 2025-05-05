@@ -70,3 +70,4 @@ jobs:
           summary: "${{ steps.issue-classification.outputs.class }} [Dependabot] Security update for ${{ github.repository }}" 
           description: "${{ steps.description-formatter.outputs.description }}"
           priority: ${{ steps.issue-classification.outputs.priority }} # Or "High", "Low", etc.
+          label: "dependabot" # Optional: Add a label to the Jira ticket
