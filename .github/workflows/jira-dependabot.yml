@@ -19,6 +19,8 @@ jobs:
           alert-lookup: true
           compat-lookup: true
           github-token: "${{ secrets.JIRA_GH_TOKEN }}"
+          skip-commit-verification: true
+          skip-verification: true
 
       - name: Issue Classification
         id: issue-classification
