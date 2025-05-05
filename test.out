@@ -1,0 +1,1338 @@
+[
+  {
+    "number": 15,
+    "state": "open",
+    "dependency": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "braces"
+      },
+      "manifest_path": "package-lock.json",
+      "scope": "runtime",
+      "relationship": "transitive"
+    },
+    "security_advisory": {
+      "ghsa_id": "GHSA-grv7-fg5c-xmjg",
+      "cve_id": "CVE-2024-4068",
+      "summary": "Uncontrolled resource consumption in braces",
+      "description": "The NPM package `braces` fails to limit the number of characters it can handle, which could lead to Memory Exhaustion. In `lib/parse.js,` if a malicious user sends \"imbalanced braces\" as input, the parsing will enter a loop, which will cause the program to start allocating heap memory without freeing it at any moment of the loop. Eventually, the JavaScript heap limit is reached, and the program will crash.\n",
+      "severity": "high",
+      "identifiers": [
+        {
+          "value": "GHSA-grv7-fg5c-xmjg",
+          "type": "GHSA"
+        },
+        {
+          "value": "CVE-2024-4068",
+          "type": "CVE"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-4068"
+        },
+        {
+          "url": "https://github.com/micromatch/braces/issues/35"
+        },
+        {
+          "url": "https://devhub.checkmarx.com/cve-details/CVE-2024-4068"
+        },
+        {
+          "url": "https://github.com/micromatch/braces/blob/98414f9f1fabe021736e26836d8306d5de747e0d/lib/parse.js#L308"
+        },
+        {
+          "url": "https://github.com/micromatch/braces/pull/37"
+        },
+        {
+          "url": "https://github.com/micromatch/braces/pull/40"
+        },
+        {
+          "url": "https://github.com/micromatch/braces/commit/415d660c3002d1ab7e63dbf490c9851da80596ff"
+        },
+        {
+          "url": "https://github.com/advisories/GHSA-grv7-fg5c-xmjg"
+        }
+      ],
+      "published_at": "2024-05-14T18:30:54Z",
+      "updated_at": "2024-07-05T21:25:08Z",
+      "withdrawn_at": null,
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "braces"
+          },
+          "severity": "high",
+          "vulnerable_version_range": "< 3.0.3",
+          "first_patched_version": {
+            "identifier": "3.0.3"
+          }
+        }
+      ],
+      "cvss_severities": {
+        "cvss_v3": {
+          "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+          "score": 7.5
+        },
+        "cvss_v4": {
+          "vector_string": null,
+          "score": 0.0
+        }
+      },
+      "epss": {
+        "percentage": 0.0047,
+        "percentile": 0.63389
+      },
+      "cvss": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "score": 7.5
+      },
+      "cwes": [
+        {
+          "cwe_id": "CWE-400",
+          "name": "Uncontrolled Resource Consumption"
+        },
+        {
+          "cwe_id": "CWE-1050",
+          "name": "Excessive Platform Resource Consumption within a Loop"
+        }
+      ]
+    },
+    "security_vulnerability": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "braces"
+      },
+      "severity": "high",
+      "vulnerable_version_range": "< 3.0.3",
+      "first_patched_version": {
+        "identifier": "3.0.3"
+      }
+    },
+    "url": "https://api.github.com/repos/brandlive1941/action-terraform/dependabot/alerts/15",
+    "html_url": "https://github.com/brandlive1941/action-terraform/security/dependabot/15",
+    "created_at": "2025-04-25T22:22:52Z",
+    "updated_at": "2025-04-25T22:22:52Z",
+    "dismissed_at": null,
+    "dismissed_by": null,
+    "dismissed_reason": null,
+    "dismissed_comment": null,
+    "fixed_at": null,
+    "auto_dismissed_at": null
+  },
+  {
+    "number": 14,
+    "state": "auto_dismissed",
+    "dependency": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/request"
+      },
+      "manifest_path": "package-lock.json",
+      "scope": "development",
+      "relationship": "transitive"
+    },
+    "security_advisory": {
+      "ghsa_id": "GHSA-rmvr-2pp2-xj38",
+      "cve_id": "CVE-2025-25290",
+      "summary": "@octokit/request has a Regular Expression in fetchWrapper that Leads to ReDoS Vulnerability Due to Catastrophic Backtracking",
+      "description": "### Summary\nThe regular expression `/<([^>]+)>; rel=\"deprecation\"/` used to match the `link` header in HTTP responses is vulnerable to a ReDoS (Regular Expression Denial of Service) attack. This vulnerability arises due to the unbounded nature of the regex's matching behavior, which can lead to catastrophic backtracking when processing specially crafted input. An attacker could exploit this flaw by sending a malicious `link` header, resulting in excessive CPU usage and potentially causing the server to become unresponsive, impacting service availability.\n### Details\nThe vulnerability resides in the regular expression `/<([^>]+)>; rel=\"deprecation\"/`, which is used to match the `link` header in HTTP responses. This regular expression captures content between angle brackets (`<>`) followed by `; rel=\"deprecation\"`. However, the pattern is vulnerable to ReDoS (Regular Expression Denial of Service) attacks due to its susceptibility to catastrophic backtracking when processing malicious input.\nAn attacker can exploit this vulnerability by sending a specially crafted `link` header designed to trigger excessive backtracking. For example, the following headers:\n```js\nfakeHeaders.set(\"link\", \"<\".repeat(100000) + \">\");\nfakeHeaders.set(\"deprecation\", \"true\");\n```\nThe crafted `link` header consists of 100,000 consecutive `<` characters followed by a closing `>`. This input forces the regular expression engine to backtrack extensively in an attempt to match the pattern. As a result, the server can experience a significant increase in CPU usage, which may lead to denial of service, making the server unresponsive or even causing it to crash under load.\nThe issue is present in the following code:\n```js\nconst matches = responseHeaders.link && responseHeaders.link.match(/<([^>]+)>; rel=\"deprecation\"/);\n```\nIn this scenario, the `link` header value triggers the regex to perform excessive backtracking, resulting in resource exhaustion and potentially causing the service to become unavailable.\n\n### PoC\n[The gist of PoC.js](https://gist.github.com/ShiyuBanzhou/2afdabf0fc4cb6cfbd3b1d58b6082f6a)\n1. run npm i @octokit/request\n2. run 'node poc.js'\nresult:\n3. then the program will stuck forever with high CPU usage\n```js\nimport { request } from \"@octokit/request\";\nconst originalFetch = globalThis.fetch;\nglobalThis.fetch = async (url, options) => {\n  const response = await originalFetch(url, options);\n  const fakeHeaders = new Headers(response.headers);\n  fakeHeaders.set(\"link\", \"<\".repeat(100000) + \">\");\n  fakeHeaders.set(\"deprecation\", \"true\");\n  return new Response(response.body, {\n    status: response.status,\n    statusText: response.statusText,\n    headers: fakeHeaders\n  });\n};\nrequest(\"GET /repos/octocat/hello-world\")\n  .then(response => {\n    // console.log(\"[+] Response received:\", response);\n  })\n  .catch(error => {\n    // console.error(\"[-] Error:\", error);\n  });\n// globalThis.fetch = originalFetch;\n```\n### Impact\nThis is a *Denial of Service (DoS) vulnerability* caused by a *ReDoS (Regular Expression Denial of Service)* flaw. The vulnerability allows an attacker to craft a malicious `link` header that exploits the inefficient backtracking behavior of the regular expression used in the code.\nThe primary impact is the potential for *server resource exhaustion*, specifically high CPU usage, which can cause the server to become unresponsive or even crash when processing the malicious request. This affects the availability of the service, leading to downtime or degraded performance.\nThe vulnerability impacts any system that uses this specific regular expression to process `link` headers in HTTP responses. This can include:\n* Web applications or APIs that rely on parsing headers for deprecation information.\n* Users interacting with the affected service, as they may experience delays or outages if the server becomes overwhelmed.\n* Service providers who may face disruption in operations or performance degradation due to this flaw.\nIf left unpatched, the vulnerability can be exploited by any unauthenticated user who is able to send a specially crafted HTTP request with a malicious `link` header, making it a low-barrier attack that could be exploited by anyone.",
+      "severity": "medium",
+      "identifiers": [
+        {
+          "value": "GHSA-rmvr-2pp2-xj38",
+          "type": "GHSA"
+        },
+        {
+          "value": "CVE-2025-25290",
+          "type": "CVE"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://github.com/octokit/request.js/security/advisories/GHSA-rmvr-2pp2-xj38"
+        },
+        {
+          "url": "https://github.com/octokit/request.js/commit/34ff07ee86fc5c20865982d77391bc910ef19c68"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-25290"
+        },
+        {
+          "url": "https://github.com/octokit/request.js/releases/tag/v8.4.1"
+        },
+        {
+          "url": "https://github.com/advisories/GHSA-rmvr-2pp2-xj38"
+        }
+      ],
+      "published_at": "2025-02-14T18:00:18Z",
+      "updated_at": "2025-02-18T19:17:42Z",
+      "withdrawn_at": null,
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/request"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 9.0.0-beta.1, < 9.2.1",
+          "first_patched_version": {
+            "identifier": "9.2.1"
+          }
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/request"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 1.0.0, < 8.4.1",
+          "first_patched_version": {
+            "identifier": "8.4.1"
+          }
+        }
+      ],
+      "cvss_severities": {
+        "cvss_v3": {
+          "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+          "score": 5.3
+        },
+        "cvss_v4": {
+          "vector_string": null,
+          "score": 0.0
+        }
+      },
+      "epss": {
+        "percentage": 0.00071,
+        "percentile": 0.22301
+      },
+      "cvss": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "score": 5.3
+      },
+      "cwes": [
+        {
+          "cwe_id": "CWE-1333",
+          "name": "Inefficient Regular Expression Complexity"
+        }
+      ]
+    },
+    "security_vulnerability": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/request"
+      },
+      "severity": "medium",
+      "vulnerable_version_range": ">= 1.0.0, < 8.4.1",
+      "first_patched_version": {
+        "identifier": "8.4.1"
+      }
+    },
+    "url": "https://api.github.com/repos/brandlive1941/action-terraform/dependabot/alerts/14",
+    "html_url": "https://github.com/brandlive1941/action-terraform/security/dependabot/14",
+    "created_at": "2025-02-18T20:51:06Z",
+    "updated_at": "2025-02-18T20:51:06Z",
+    "dismissed_at": null,
+    "dismissed_by": null,
+    "dismissed_reason": null,
+    "dismissed_comment": null,
+    "fixed_at": null,
+    "auto_dismissed_at": "2025-02-18T20:51:06Z"
+  },
+  {
+    "number": 13,
+    "state": "auto_dismissed",
+    "dependency": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/plugin-paginate-rest"
+      },
+      "manifest_path": "package-lock.json",
+      "scope": "development",
+      "relationship": "transitive"
+    },
+    "security_advisory": {
+      "ghsa_id": "GHSA-h5c3-5r3r-rr8q",
+      "cve_id": "CVE-2025-25288",
+      "summary": "@octokit/plugin-paginate-rest has a Regular Expression in iterator Leads to ReDoS Vulnerability Due to Catastrophic Backtracking",
+      "description": "### Summary\nFor the npm package `@octokit/plugin-paginate-rest`, when calling `octokit.paginate.iterator()`, a specially crafted `octokit` instance—particularly with a malicious `link` parameter in the `headers` section of the `request`—can trigger a ReDoS attack.\n\n### Details\nThe issue occurs at [line 39](https://github.com/octokit/plugin-paginate-rest.js/blob/main/src/iterator.ts) of iterator.ts in the @octokit/plugin-paginate-rest repository. The relevant code is as follows:\n```js\nurl = ((normalizedResponse.headers.link || \"\").match(\n  /<([^>]+)>;\\s*rel=\"next\"/,\n) || [])[1];\n```\nThe regular expression `/<([^>]+)>;\\s*rel=\"next\"/` may lead to a potential backtracking vulnerability, resulting in a ReDoS (Regular Expression Denial of Service) attack. This could cause high CPU utilization and even service slowdowns or freezes when processing specially crafted `Link` headers.\n\n### PoC\n[The gist of PoC.js](https://gist.github.com/ShiyuBanzhou/d3f2ad000be8384d2105c87c2ed7ce7d)\n1. run npm i @octokit/plugin-paginate-rest\n2. run 'node poc.js'\nresult:\n3. then the program will stuck forever with high CPU usage\n```js\nimport { Octokit } from \"@octokit/core\";\nimport { paginateRest } from \"@octokit/plugin-paginate-rest\";\n\nconst MyOctokit = Octokit.plugin(paginateRest);\nconst octokit = new MyOctokit({\n  auth: \"your-github-token\",\n});\n\n// Intercept the request to inject a malicious 'link' header for ReDoS\noctokit.hook.wrap(\"request\", async (request, options) => {\n  const maliciousLinkHeader = \"\" + \"<\".repeat(100000) + \">\"; // attack string\n  return {\n    data: [],\n    headers: {\n      link: maliciousLinkHeader, // Inject malicious 'link' header\n    },\n  };\n});\n\n// Trigger the ReDoS attack by paginating through GitHub issues\n(async () => {\n  try {\n    for await (const normalizedResponse of octokit.paginate.iterator(\n      \"GET /repos/{owner}/{repo}/issues\", { owner: \"DayShift\", repo: \"ReDos\", per_page: 100 }\n    )) {\n      console.log({ normalizedResponse });\n    }\n  } catch (error) {\n    console.error(\"Error encountered:\", error);\n  }\n})();\n```\n![image](https://github.com/user-attachments/assets/619c030e-5473-4a26-9e2a-4b9a26c1563b)\n\n### Impact\n#### What kind of vulnerability is it?\nThis is a *Regular Expression Denial of Service (ReDoS) vulnerability*, which occurs due to excessive backtracking in the regex pattern:\n```js\n/<([^>]+)>;\\s*rel=\"next\"/\n```\nWhen processing a specially crafted `Link` header, this regex can cause significant performance degradation, leading to high CPU utilization and potential service unresponsiveness.\n#### Who is impacted?\n* Users of `@octokit/plugin-paginate-rest` who call `octokit.paginate.iterator()` and process untrusted or manipulated `Link` headers.\n* Applications relying on Octokit's pagination mechanism, particularly those handling large volumes of API requests.\n* GitHub API consumers who integrate this package into their projects for paginated data retrieval.",
+      "severity": "medium",
+      "identifiers": [
+        {
+          "value": "GHSA-h5c3-5r3r-rr8q",
+          "type": "GHSA"
+        },
+        {
+          "value": "CVE-2025-25288",
+          "type": "CVE"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://github.com/octokit/plugin-paginate-rest.js/security/advisories/GHSA-h5c3-5r3r-rr8q"
+        },
+        {
+          "url": "https://github.com/octokit/plugin-paginate-rest.js/commit/bb6c4f945d8023902cf387391d2b2209261044ab"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-25288"
+        },
+        {
+          "url": "https://github.com/octokit/plugin-paginate-rest.js/blob/main/src/iterator.ts"
+        },
+        {
+          "url": "https://github.com/octokit/plugin-paginate-rest.js/releases/tag/v9.2.2"
+        },
+        {
+          "url": "https://github.com/advisories/GHSA-h5c3-5r3r-rr8q"
+        }
+      ],
+      "published_at": "2025-02-14T17:57:59Z",
+      "updated_at": "2025-02-18T19:15:06Z",
+      "withdrawn_at": null,
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/plugin-paginate-rest"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 9.3.0-beta.1, < 11.4.1",
+          "first_patched_version": {
+            "identifier": "11.4.1"
+          }
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/plugin-paginate-rest"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 1.0.0, < 9.2.2",
+          "first_patched_version": {
+            "identifier": "9.2.2"
+          }
+        }
+      ],
+      "cvss_severities": {
+        "cvss_v3": {
+          "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+          "score": 5.3
+        },
+        "cvss_v4": {
+          "vector_string": null,
+          "score": 0.0
+        }
+      },
+      "epss": {
+        "percentage": 0.00072,
+        "percentile": 0.22669
+      },
+      "cvss": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "score": 5.3
+      },
+      "cwes": [
+        {
+          "cwe_id": "CWE-1333",
+          "name": "Inefficient Regular Expression Complexity"
+        }
+      ]
+    },
+    "security_vulnerability": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/plugin-paginate-rest"
+      },
+      "severity": "medium",
+      "vulnerable_version_range": ">= 1.0.0, < 9.2.2",
+      "first_patched_version": {
+        "identifier": "9.2.2"
+      }
+    },
+    "url": "https://api.github.com/repos/brandlive1941/action-terraform/dependabot/alerts/13",
+    "html_url": "https://github.com/brandlive1941/action-terraform/security/dependabot/13",
+    "created_at": "2025-02-18T20:37:04Z",
+    "updated_at": "2025-02-18T20:37:04Z",
+    "dismissed_at": null,
+    "dismissed_by": null,
+    "dismissed_reason": null,
+    "dismissed_comment": null,
+    "fixed_at": null,
+    "auto_dismissed_at": "2025-02-18T20:37:04Z"
+  },
+  {
+    "number": 12,
+    "state": "auto_dismissed",
+    "dependency": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/request"
+      },
+      "manifest_path": "package-lock.json",
+      "scope": "development",
+      "relationship": "transitive"
+    },
+    "security_advisory": {
+      "ghsa_id": "GHSA-rmvr-2pp2-xj38",
+      "cve_id": "CVE-2025-25290",
+      "summary": "@octokit/request has a Regular Expression in fetchWrapper that Leads to ReDoS Vulnerability Due to Catastrophic Backtracking",
+      "description": "### Summary\nThe regular expression `/<([^>]+)>; rel=\"deprecation\"/` used to match the `link` header in HTTP responses is vulnerable to a ReDoS (Regular Expression Denial of Service) attack. This vulnerability arises due to the unbounded nature of the regex's matching behavior, which can lead to catastrophic backtracking when processing specially crafted input. An attacker could exploit this flaw by sending a malicious `link` header, resulting in excessive CPU usage and potentially causing the server to become unresponsive, impacting service availability.\n### Details\nThe vulnerability resides in the regular expression `/<([^>]+)>; rel=\"deprecation\"/`, which is used to match the `link` header in HTTP responses. This regular expression captures content between angle brackets (`<>`) followed by `; rel=\"deprecation\"`. However, the pattern is vulnerable to ReDoS (Regular Expression Denial of Service) attacks due to its susceptibility to catastrophic backtracking when processing malicious input.\nAn attacker can exploit this vulnerability by sending a specially crafted `link` header designed to trigger excessive backtracking. For example, the following headers:\n```js\nfakeHeaders.set(\"link\", \"<\".repeat(100000) + \">\");\nfakeHeaders.set(\"deprecation\", \"true\");\n```\nThe crafted `link` header consists of 100,000 consecutive `<` characters followed by a closing `>`. This input forces the regular expression engine to backtrack extensively in an attempt to match the pattern. As a result, the server can experience a significant increase in CPU usage, which may lead to denial of service, making the server unresponsive or even causing it to crash under load.\nThe issue is present in the following code:\n```js\nconst matches = responseHeaders.link && responseHeaders.link.match(/<([^>]+)>; rel=\"deprecation\"/);\n```\nIn this scenario, the `link` header value triggers the regex to perform excessive backtracking, resulting in resource exhaustion and potentially causing the service to become unavailable.\n\n### PoC\n[The gist of PoC.js](https://gist.github.com/ShiyuBanzhou/2afdabf0fc4cb6cfbd3b1d58b6082f6a)\n1. run npm i @octokit/request\n2. run 'node poc.js'\nresult:\n3. then the program will stuck forever with high CPU usage\n```js\nimport { request } from \"@octokit/request\";\nconst originalFetch = globalThis.fetch;\nglobalThis.fetch = async (url, options) => {\n  const response = await originalFetch(url, options);\n  const fakeHeaders = new Headers(response.headers);\n  fakeHeaders.set(\"link\", \"<\".repeat(100000) + \">\");\n  fakeHeaders.set(\"deprecation\", \"true\");\n  return new Response(response.body, {\n    status: response.status,\n    statusText: response.statusText,\n    headers: fakeHeaders\n  });\n};\nrequest(\"GET /repos/octocat/hello-world\")\n  .then(response => {\n    // console.log(\"[+] Response received:\", response);\n  })\n  .catch(error => {\n    // console.error(\"[-] Error:\", error);\n  });\n// globalThis.fetch = originalFetch;\n```\n### Impact\nThis is a *Denial of Service (DoS) vulnerability* caused by a *ReDoS (Regular Expression Denial of Service)* flaw. The vulnerability allows an attacker to craft a malicious `link` header that exploits the inefficient backtracking behavior of the regular expression used in the code.\nThe primary impact is the potential for *server resource exhaustion*, specifically high CPU usage, which can cause the server to become unresponsive or even crash when processing the malicious request. This affects the availability of the service, leading to downtime or degraded performance.\nThe vulnerability impacts any system that uses this specific regular expression to process `link` headers in HTTP responses. This can include:\n* Web applications or APIs that rely on parsing headers for deprecation information.\n* Users interacting with the affected service, as they may experience delays or outages if the server becomes overwhelmed.\n* Service providers who may face disruption in operations or performance degradation due to this flaw.\nIf left unpatched, the vulnerability can be exploited by any unauthenticated user who is able to send a specially crafted HTTP request with a malicious `link` header, making it a low-barrier attack that could be exploited by anyone.",
+      "severity": "medium",
+      "identifiers": [
+        {
+          "value": "GHSA-rmvr-2pp2-xj38",
+          "type": "GHSA"
+        },
+        {
+          "value": "CVE-2025-25290",
+          "type": "CVE"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://github.com/octokit/request.js/security/advisories/GHSA-rmvr-2pp2-xj38"
+        },
+        {
+          "url": "https://github.com/octokit/request.js/commit/34ff07ee86fc5c20865982d77391bc910ef19c68"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-25290"
+        },
+        {
+          "url": "https://github.com/octokit/request.js/releases/tag/v8.4.1"
+        },
+        {
+          "url": "https://github.com/advisories/GHSA-rmvr-2pp2-xj38"
+        }
+      ],
+      "published_at": "2025-02-14T18:00:18Z",
+      "updated_at": "2025-02-18T19:17:42Z",
+      "withdrawn_at": null,
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/request"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 9.0.0-beta.1, < 9.2.1",
+          "first_patched_version": {
+            "identifier": "9.2.1"
+          }
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/request"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 1.0.0, < 8.4.1",
+          "first_patched_version": {
+            "identifier": "8.4.1"
+          }
+        }
+      ],
+      "cvss_severities": {
+        "cvss_v3": {
+          "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+          "score": 5.3
+        },
+        "cvss_v4": {
+          "vector_string": null,
+          "score": 0.0
+        }
+      },
+      "epss": {
+        "percentage": 0.00071,
+        "percentile": 0.22301
+      },
+      "cvss": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "score": 5.3
+      },
+      "cwes": [
+        {
+          "cwe_id": "CWE-1333",
+          "name": "Inefficient Regular Expression Complexity"
+        }
+      ]
+    },
+    "security_vulnerability": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/request"
+      },
+      "severity": "medium",
+      "vulnerable_version_range": ">= 9.0.0-beta.1, < 9.2.1",
+      "first_patched_version": {
+        "identifier": "9.2.1"
+      }
+    },
+    "url": "https://api.github.com/repos/brandlive1941/action-terraform/dependabot/alerts/12",
+    "html_url": "https://github.com/brandlive1941/action-terraform/security/dependabot/12",
+    "created_at": "2025-02-18T19:17:59Z",
+    "updated_at": "2025-02-18T19:17:59Z",
+    "dismissed_at": null,
+    "dismissed_by": null,
+    "dismissed_reason": null,
+    "dismissed_comment": null,
+    "fixed_at": null,
+    "auto_dismissed_at": "2025-02-18T19:17:59Z"
+  },
+  {
+    "number": 11,
+    "state": "auto_dismissed",
+    "dependency": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/plugin-paginate-rest"
+      },
+      "manifest_path": "package-lock.json",
+      "scope": "development",
+      "relationship": "transitive"
+    },
+    "security_advisory": {
+      "ghsa_id": "GHSA-h5c3-5r3r-rr8q",
+      "cve_id": "CVE-2025-25288",
+      "summary": "@octokit/plugin-paginate-rest has a Regular Expression in iterator Leads to ReDoS Vulnerability Due to Catastrophic Backtracking",
+      "description": "### Summary\nFor the npm package `@octokit/plugin-paginate-rest`, when calling `octokit.paginate.iterator()`, a specially crafted `octokit` instance—particularly with a malicious `link` parameter in the `headers` section of the `request`—can trigger a ReDoS attack.\n\n### Details\nThe issue occurs at [line 39](https://github.com/octokit/plugin-paginate-rest.js/blob/main/src/iterator.ts) of iterator.ts in the @octokit/plugin-paginate-rest repository. The relevant code is as follows:\n```js\nurl = ((normalizedResponse.headers.link || \"\").match(\n  /<([^>]+)>;\\s*rel=\"next\"/,\n) || [])[1];\n```\nThe regular expression `/<([^>]+)>;\\s*rel=\"next\"/` may lead to a potential backtracking vulnerability, resulting in a ReDoS (Regular Expression Denial of Service) attack. This could cause high CPU utilization and even service slowdowns or freezes when processing specially crafted `Link` headers.\n\n### PoC\n[The gist of PoC.js](https://gist.github.com/ShiyuBanzhou/d3f2ad000be8384d2105c87c2ed7ce7d)\n1. run npm i @octokit/plugin-paginate-rest\n2. run 'node poc.js'\nresult:\n3. then the program will stuck forever with high CPU usage\n```js\nimport { Octokit } from \"@octokit/core\";\nimport { paginateRest } from \"@octokit/plugin-paginate-rest\";\n\nconst MyOctokit = Octokit.plugin(paginateRest);\nconst octokit = new MyOctokit({\n  auth: \"your-github-token\",\n});\n\n// Intercept the request to inject a malicious 'link' header for ReDoS\noctokit.hook.wrap(\"request\", async (request, options) => {\n  const maliciousLinkHeader = \"\" + \"<\".repeat(100000) + \">\"; // attack string\n  return {\n    data: [],\n    headers: {\n      link: maliciousLinkHeader, // Inject malicious 'link' header\n    },\n  };\n});\n\n// Trigger the ReDoS attack by paginating through GitHub issues\n(async () => {\n  try {\n    for await (const normalizedResponse of octokit.paginate.iterator(\n      \"GET /repos/{owner}/{repo}/issues\", { owner: \"DayShift\", repo: \"ReDos\", per_page: 100 }\n    )) {\n      console.log({ normalizedResponse });\n    }\n  } catch (error) {\n    console.error(\"Error encountered:\", error);\n  }\n})();\n```\n![image](https://github.com/user-attachments/assets/619c030e-5473-4a26-9e2a-4b9a26c1563b)\n\n### Impact\n#### What kind of vulnerability is it?\nThis is a *Regular Expression Denial of Service (ReDoS) vulnerability*, which occurs due to excessive backtracking in the regex pattern:\n```js\n/<([^>]+)>;\\s*rel=\"next\"/\n```\nWhen processing a specially crafted `Link` header, this regex can cause significant performance degradation, leading to high CPU utilization and potential service unresponsiveness.\n#### Who is impacted?\n* Users of `@octokit/plugin-paginate-rest` who call `octokit.paginate.iterator()` and process untrusted or manipulated `Link` headers.\n* Applications relying on Octokit's pagination mechanism, particularly those handling large volumes of API requests.\n* GitHub API consumers who integrate this package into their projects for paginated data retrieval.",
+      "severity": "medium",
+      "identifiers": [
+        {
+          "value": "GHSA-h5c3-5r3r-rr8q",
+          "type": "GHSA"
+        },
+        {
+          "value": "CVE-2025-25288",
+          "type": "CVE"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://github.com/octokit/plugin-paginate-rest.js/security/advisories/GHSA-h5c3-5r3r-rr8q"
+        },
+        {
+          "url": "https://github.com/octokit/plugin-paginate-rest.js/commit/bb6c4f945d8023902cf387391d2b2209261044ab"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-25288"
+        },
+        {
+          "url": "https://github.com/octokit/plugin-paginate-rest.js/blob/main/src/iterator.ts"
+        },
+        {
+          "url": "https://github.com/octokit/plugin-paginate-rest.js/releases/tag/v9.2.2"
+        },
+        {
+          "url": "https://github.com/advisories/GHSA-h5c3-5r3r-rr8q"
+        }
+      ],
+      "published_at": "2025-02-14T17:57:59Z",
+      "updated_at": "2025-02-18T19:15:06Z",
+      "withdrawn_at": null,
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/plugin-paginate-rest"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 9.3.0-beta.1, < 11.4.1",
+          "first_patched_version": {
+            "identifier": "11.4.1"
+          }
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/plugin-paginate-rest"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 1.0.0, < 9.2.2",
+          "first_patched_version": {
+            "identifier": "9.2.2"
+          }
+        }
+      ],
+      "cvss_severities": {
+        "cvss_v3": {
+          "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+          "score": 5.3
+        },
+        "cvss_v4": {
+          "vector_string": null,
+          "score": 0.0
+        }
+      },
+      "epss": {
+        "percentage": 0.00072,
+        "percentile": 0.22669
+      },
+      "cvss": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "score": 5.3
+      },
+      "cwes": [
+        {
+          "cwe_id": "CWE-1333",
+          "name": "Inefficient Regular Expression Complexity"
+        }
+      ]
+    },
+    "security_vulnerability": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/plugin-paginate-rest"
+      },
+      "severity": "medium",
+      "vulnerable_version_range": ">= 9.3.0-beta.1, < 11.4.1",
+      "first_patched_version": {
+        "identifier": "11.4.1"
+      }
+    },
+    "url": "https://api.github.com/repos/brandlive1941/action-terraform/dependabot/alerts/11",
+    "html_url": "https://github.com/brandlive1941/action-terraform/security/dependabot/11",
+    "created_at": "2025-02-18T19:15:19Z",
+    "updated_at": "2025-02-18T19:15:19Z",
+    "dismissed_at": null,
+    "dismissed_by": null,
+    "dismissed_reason": null,
+    "dismissed_comment": null,
+    "fixed_at": null,
+    "auto_dismissed_at": "2025-02-18T19:15:19Z"
+  },
+  {
+    "number": 10,
+    "state": "auto_dismissed",
+    "dependency": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/request-error"
+      },
+      "manifest_path": "package-lock.json",
+      "scope": "development",
+      "relationship": "transitive"
+    },
+    "security_advisory": {
+      "ghsa_id": "GHSA-xx4v-prfh-6cgc",
+      "cve_id": "CVE-2025-25289",
+      "summary": "@octokit/request-error has a Regular Expression in index that Leads to ReDoS Vulnerability Due to Catastrophic Backtracking",
+      "description": "### Summary\nA Regular Expression Denial of Service (ReDoS) vulnerability exists in the processing of HTTP request headers. By sending an authorization header containing an excessively long sequence of spaces followed by a newline and \"@\", an attacker can exploit inefficient regular expression processing, leading to excessive resource consumption. This can significantly degrade server performance or cause a denial-of-service (DoS) condition, impacting availability.\n### Details\nThe issue occurs at [line 52](https://github.com/octokit/request-error.js/blob/main/src/index.ts) of iterator.ts in the @octokit/request-error repository.\nThe vulnerability is caused by the use of an inefficient regular expression in the handling of the `authorization` header within the request processing logic:\n```js\nauthorization: options.request.headers.authorization.replace(\n  / .*$/, \n  \" [REDACTED]\"\n)\n```\nThe regular expression `/ .*$/` matches a space followed by any number of characters until the end of the line. This pattern is vulnerable to Regular Expression Denial of Service (ReDoS) when processing specially crafted input. Specifically, an attacker can send an `authorization` header containing a long sequence of spaces followed by a newline and \"@\", such as:\n```js\nheaders: {\n  authorization: \"\" + \" \".repeat(100000) + \"\\n@\",\n}\n```\nDue to the way JavaScript's regular expression engine backtracks while attempting to match the space followed by arbitrary characters, this input can cause excessive CPU usage, significantly slowing down or even freezing the server. This leads to a denial-of-service condition, impacting availability.\n### PoC\n[The gist of PoC.js](https://gist.github.com/ShiyuBanzhou/e1203ad22701fd043b8501eb37676a0d)\n1. run npm i @octokit/request-error\n2. run 'node poc.js'\nresult:\n3. then the program will stuck forever with high CPU usage\n```js\nimport { RequestError } from \"@octokit/request-error\";\n\nconst error = new RequestError(\"Oops\", 500, {\n  request: {\n    method: \"POST\",\n    url: \"https://api.github.com/foo\",\n    body: {\n      bar: \"baz\",\n    },\n    headers: {\n      authorization: \"\"+\" \".repeat(100000)+\"\\n@\",\n    },\n  },\n  response: {\n    status: 500,\n    url: \"https://api.github.com/foo\",\n    headers: {\n      \"x-github-request-id\": \"1:2:3:4\",\n    },\n    data: {\n      foo: \"bar\",\n    },\n  },\n});\n```\n\n### Impact\n#### Vulnerability Type & Impact:\nThis is a `Regular Expression Denial of Service (ReDoS) vulnerability`, which occurs due to an inefficient regular expression (`/ .*$/`) used to sanitize the `authorization` header. An attacker can craft a malicious input that triggers excessive backtracking in the regex engine, leading to high CPU consumption and potential denial-of-service (DoS).\n#### Who is Impacted?\n* Projects or services using this code to process HTTP headers are vulnerable.\n* Applications that rely on user-supplied `authorization` headers are at risk, especially those processing a large volume of authentication requests.\n* Multi-tenant or API-driven platforms could experience degraded performance or service outages if exploited at scale.",
+      "severity": "medium",
+      "identifiers": [
+        {
+          "value": "GHSA-xx4v-prfh-6cgc",
+          "type": "GHSA"
+        },
+        {
+          "value": "CVE-2025-25289",
+          "type": "CVE"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://github.com/octokit/request-error.js/security/advisories/GHSA-xx4v-prfh-6cgc"
+        },
+        {
+          "url": "https://github.com/octokit/request-error.js/commit/d558320874a4bc8d356babf1079e6f0056a59b9e"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-25289"
+        },
+        {
+          "url": "https://github.com/octokit/request-error.js/blob/main/src/index.ts"
+        },
+        {
+          "url": "https://github.com/advisories/GHSA-xx4v-prfh-6cgc"
+        }
+      ],
+      "published_at": "2025-02-14T17:58:54Z",
+      "updated_at": "2025-02-14T23:07:30Z",
+      "withdrawn_at": null,
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/request-error"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 1.0.0, < 5.1.1",
+          "first_patched_version": {
+            "identifier": "5.1.1"
+          }
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/request-error"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 6.0.0, < 6.1.7",
+          "first_patched_version": {
+            "identifier": "6.1.7"
+          }
+        }
+      ],
+      "cvss_severities": {
+        "cvss_v3": {
+          "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+          "score": 5.3
+        },
+        "cvss_v4": {
+          "vector_string": null,
+          "score": 0.0
+        }
+      },
+      "epss": {
+        "percentage": 0.00078,
+        "percentile": 0.2419
+      },
+      "cvss": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "score": 5.3
+      },
+      "cwes": [
+        {
+          "cwe_id": "CWE-1333",
+          "name": "Inefficient Regular Expression Complexity"
+        }
+      ]
+    },
+    "security_vulnerability": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/request-error"
+      },
+      "severity": "medium",
+      "vulnerable_version_range": ">= 1.0.0, < 5.1.1",
+      "first_patched_version": {
+        "identifier": "5.1.1"
+      }
+    },
+    "url": "https://api.github.com/repos/brandlive1941/action-terraform/dependabot/alerts/10",
+    "html_url": "https://github.com/brandlive1941/action-terraform/security/dependabot/10",
+    "created_at": "2025-02-15T00:17:52Z",
+    "updated_at": "2025-02-15T00:17:52Z",
+    "dismissed_at": null,
+    "dismissed_by": null,
+    "dismissed_reason": null,
+    "dismissed_comment": null,
+    "fixed_at": null,
+    "auto_dismissed_at": "2025-02-15T00:17:52Z"
+  },
+  {
+    "number": 9,
+    "state": "auto_dismissed",
+    "dependency": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/request-error"
+      },
+      "manifest_path": "package-lock.json",
+      "scope": "development",
+      "relationship": "transitive"
+    },
+    "security_advisory": {
+      "ghsa_id": "GHSA-xx4v-prfh-6cgc",
+      "cve_id": "CVE-2025-25289",
+      "summary": "@octokit/request-error has a Regular Expression in index that Leads to ReDoS Vulnerability Due to Catastrophic Backtracking",
+      "description": "### Summary\nA Regular Expression Denial of Service (ReDoS) vulnerability exists in the processing of HTTP request headers. By sending an authorization header containing an excessively long sequence of spaces followed by a newline and \"@\", an attacker can exploit inefficient regular expression processing, leading to excessive resource consumption. This can significantly degrade server performance or cause a denial-of-service (DoS) condition, impacting availability.\n### Details\nThe issue occurs at [line 52](https://github.com/octokit/request-error.js/blob/main/src/index.ts) of iterator.ts in the @octokit/request-error repository.\nThe vulnerability is caused by the use of an inefficient regular expression in the handling of the `authorization` header within the request processing logic:\n```js\nauthorization: options.request.headers.authorization.replace(\n  / .*$/, \n  \" [REDACTED]\"\n)\n```\nThe regular expression `/ .*$/` matches a space followed by any number of characters until the end of the line. This pattern is vulnerable to Regular Expression Denial of Service (ReDoS) when processing specially crafted input. Specifically, an attacker can send an `authorization` header containing a long sequence of spaces followed by a newline and \"@\", such as:\n```js\nheaders: {\n  authorization: \"\" + \" \".repeat(100000) + \"\\n@\",\n}\n```\nDue to the way JavaScript's regular expression engine backtracks while attempting to match the space followed by arbitrary characters, this input can cause excessive CPU usage, significantly slowing down or even freezing the server. This leads to a denial-of-service condition, impacting availability.\n### PoC\n[The gist of PoC.js](https://gist.github.com/ShiyuBanzhou/e1203ad22701fd043b8501eb37676a0d)\n1. run npm i @octokit/request-error\n2. run 'node poc.js'\nresult:\n3. then the program will stuck forever with high CPU usage\n```js\nimport { RequestError } from \"@octokit/request-error\";\n\nconst error = new RequestError(\"Oops\", 500, {\n  request: {\n    method: \"POST\",\n    url: \"https://api.github.com/foo\",\n    body: {\n      bar: \"baz\",\n    },\n    headers: {\n      authorization: \"\"+\" \".repeat(100000)+\"\\n@\",\n    },\n  },\n  response: {\n    status: 500,\n    url: \"https://api.github.com/foo\",\n    headers: {\n      \"x-github-request-id\": \"1:2:3:4\",\n    },\n    data: {\n      foo: \"bar\",\n    },\n  },\n});\n```\n\n### Impact\n#### Vulnerability Type & Impact:\nThis is a `Regular Expression Denial of Service (ReDoS) vulnerability`, which occurs due to an inefficient regular expression (`/ .*$/`) used to sanitize the `authorization` header. An attacker can craft a malicious input that triggers excessive backtracking in the regex engine, leading to high CPU consumption and potential denial-of-service (DoS).\n#### Who is Impacted?\n* Projects or services using this code to process HTTP headers are vulnerable.\n* Applications that rely on user-supplied `authorization` headers are at risk, especially those processing a large volume of authentication requests.\n* Multi-tenant or API-driven platforms could experience degraded performance or service outages if exploited at scale.",
+      "severity": "medium",
+      "identifiers": [
+        {
+          "value": "GHSA-xx4v-prfh-6cgc",
+          "type": "GHSA"
+        },
+        {
+          "value": "CVE-2025-25289",
+          "type": "CVE"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://github.com/octokit/request-error.js/security/advisories/GHSA-xx4v-prfh-6cgc"
+        },
+        {
+          "url": "https://github.com/octokit/request-error.js/commit/d558320874a4bc8d356babf1079e6f0056a59b9e"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-25289"
+        },
+        {
+          "url": "https://github.com/octokit/request-error.js/blob/main/src/index.ts"
+        },
+        {
+          "url": "https://github.com/advisories/GHSA-xx4v-prfh-6cgc"
+        }
+      ],
+      "published_at": "2025-02-14T17:58:54Z",
+      "updated_at": "2025-02-14T23:07:30Z",
+      "withdrawn_at": null,
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/request-error"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 1.0.0, < 5.1.1",
+          "first_patched_version": {
+            "identifier": "5.1.1"
+          }
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/request-error"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 6.0.0, < 6.1.7",
+          "first_patched_version": {
+            "identifier": "6.1.7"
+          }
+        }
+      ],
+      "cvss_severities": {
+        "cvss_v3": {
+          "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+          "score": 5.3
+        },
+        "cvss_v4": {
+          "vector_string": null,
+          "score": 0.0
+        }
+      },
+      "epss": {
+        "percentage": 0.00078,
+        "percentile": 0.2419
+      },
+      "cvss": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "score": 5.3
+      },
+      "cwes": [
+        {
+          "cwe_id": "CWE-1333",
+          "name": "Inefficient Regular Expression Complexity"
+        }
+      ]
+    },
+    "security_vulnerability": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/request-error"
+      },
+      "severity": "medium",
+      "vulnerable_version_range": ">= 6.0.0, < 6.1.7",
+      "first_patched_version": {
+        "identifier": "6.1.7"
+      }
+    },
+    "url": "https://api.github.com/repos/brandlive1941/action-terraform/dependabot/alerts/9",
+    "html_url": "https://github.com/brandlive1941/action-terraform/security/dependabot/9",
+    "created_at": "2025-02-14T23:07:42Z",
+    "updated_at": "2025-02-14T23:07:42Z",
+    "dismissed_at": null,
+    "dismissed_by": null,
+    "dismissed_reason": null,
+    "dismissed_comment": null,
+    "fixed_at": null,
+    "auto_dismissed_at": "2025-02-14T23:07:42Z"
+  },
+  {
+    "number": 8,
+    "state": "auto_dismissed",
+    "dependency": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/endpoint"
+      },
+      "manifest_path": "package-lock.json",
+      "scope": "development",
+      "relationship": "transitive"
+    },
+    "security_advisory": {
+      "ghsa_id": "GHSA-x4c5-c7rf-jjgv",
+      "cve_id": "CVE-2025-25285",
+      "summary": "@octokit/endpoint has a Regular Expression in parse that Leads to ReDoS Vulnerability Due to Catastrophic Backtracking",
+      "description": "### Summary\nBy crafting specific `options` parameters, the `endpoint.parse(options)` call can be triggered, leading to a regular expression denial-of-service (ReDoS) attack. This causes the program to hang and results in high CPU utilization.\n\n### Details\nThe issue occurs in the `parse` function within the `parse.ts` file of the npm package `@octokit/endpoint`. The specific code is located at the following link: https://github.com/octokit/endpoint.js/blob/main/src/parse.ts, at line 62:\n```ts\nheaders.accept.match(/[\\w-]+(?=-preview)/g) || ([] as string[]);\n```\nThe regular expression `/[\\w-]+(?=-preview)/g` encounters a backtracking issue when it processes `a large number of characters` followed by the `-` symbol.\ne.g., the attack string: \n```js\n\"\" + \"A\".repeat(100000) + \"-\"\n```\n\n### PoC\n[The gist](https://gist.github.com/ShiyuBanzhou/a17202ac1ad403a80ca302466d5e56c4)\nHere is the reproduction process for the vulnerability:\n1. run 'npm i @octokit/endpoint'\n2. Move `poc.js` to the root directory of the same level as `README.md`\n3. run 'node poc.js'\nresult:\n4. then the program will stuck forever with high CPU usage\n```js\nimport { endpoint } from \"@octokit/endpoint\";\n// import { parse } from \"./node_modules/@octokit/endpoint/dist-src/parse.js\";\nconst options = {  \n  method: \"POST\",\n  url: \"/graphql\", // Ensure that the URL ends with \"/graphql\"\n  headers: {\n    accept: \"\" + \"A\".repeat(100000) + \"-\", // Pass in the attack string\n    \"content-type\": \"text/plain\",\n  },\n  mediaType: {\n    previews: [\"test-preview\"], // Ensure that mediaType.previews exists and has values\n    format: \"raw\", // Optional media format\n  },\n  baseUrl: \"https://api.github.com\",\n};\n\nconst startTime = performance.now();\nendpoint.parse(options);\nconst endTime = performance.now();\nconst duration = endTime - startTime;\nconsole.log(`Endpoint execution time: ${duration} ms`);\n```\n1. **Import the `endpoint` module**: First, import the `endpoint` module from the npm package `@octokit/endpoint`, which is used for handling GitHub API requests.\n\n2. **Construct the `options` object that triggers a ReDoS attack**: The following member variables are critical in constructing the `options` object:\n- `url`: Set to `\"/graphql\"`, ensuring the URL ends with `/graphql` to match the format for GitHub's GraphQL API.\n- `headers`:\n> `accept`: A long attack string is crafted with `\"A\".repeat(100000) + \"-\"`, which will be passed to the regular expression and cause a backtracking attack (ReDoS).\n> \n- `mediaType`:\n>`previews`: Set to `[\"test-preview\"]`, ensuring `mediaType.previews` exists and has values.\n>\n>`format`: Set to `\"raw\"`, indicating raw data format.\n\n3. **Call the `endpoint.parse(options)` function and record the time**: Call the `endpoint.parse(options)` function and use `performance.now()` to record the start and end times, measuring the execution duration.\n\n4. **Calculate the time difference and output it**: Compute the difference between the start and end times and output it using `console.log`. When the attack string length reaches 100000, the response time typically exceeds 10000 milliseconds, satisfying the characteristic condition for a ReDoS attack, where response times dramatically increase.\n<img width=\"800\" alt=\"2\" src=\"https://github.com/user-attachments/assets/9fc865a4-e150-42d5-bcd5-93ab6b0c29ef\" />\n\n### Impact\n#### What kind of vulnerability is it?\nThis is a **Regular Expression Denial of Service (ReDoS)** vulnerability. It arises from inefficient regular expressions that can cause excessive backtracking when processing certain inputs. Specifically, the regular expression `/[\\w-]+(?=-preview)/g` is vulnerable because it attempts to match long strings of characters followed by a hyphen (`-`), which leads to inefficient backtracking when provided with specially crafted attack strings. This backtracking results in high CPU utilization, causing the application to become unresponsive and denying service to legitimate users.\n#### Who is impacted?\nThis vulnerability impacts any application that uses the affected regular expression in conjunction with user-controlled inputs, particularly where large or maliciously crafted strings can trigger excessive backtracking.\nIn addition to directly affecting applications using the `@octokit/endpoint package`, the impact is more widespread because `@octokit/endpoint` is a library used to wrap REST APIs, including GitHub's API. This means that any system or service built on top of this library that interacts with GitHub or other REST APIs could be vulnerable. Given the extensive use of this package in API communication, the potential for exploitation is broad and serious. The vulnerability could affect a wide range of applications, from small integrations to large enterprise-level systems, especially those relying on the package to handle API requests.\nAttackers can exploit this vulnerability to cause performance degradation, downtime, and service disruption, making it a critical issue for anyone using the affected version of `@octokit/endpoint`.\n\n### Solution\nTo resolve the ReDoS vulnerability, the regular expression should be updated to avoid excessive backtracking. By modifying the regular expression to `(?<![\\w-])[\\w-]+(?=-preview)`, we prevent the issue.\nHere is how this change solves the problem:\nHere is how this change solves the problem:\n\n1. **Old Regular Expression**: `/[\\w-]+(?=-preview)/g`\n- This regular expression matches any sequence of word characters (`\\w`) and hyphens (`-`) followed by `-preview`.\n- The issue arises when the regex engine encounters a long string of characters followed by a `-`, causing excessive backtracking and high CPU usage.\n2. **New Regular Expression**: `(?<![\\w-])[\\w-]+(?=-preview)`\n- This updated regular expression uses a negative lookbehind `(?<![\\w-])`, ensuring that the matched string is not preceded by any word characters or hyphens (`\\w` or `-`).\n- The new expression still matches sequences of word characters and hyphens, but the negative lookbehind ensures it doesn't cause backtracking issues when processing long attack strings.\n- By adding this lookbehind, we effectively prevent the vulnerability, ensuring the regex operates efficiently without excessive backtracking.\n\n#### Full Solution Example:\nThe specific code is located at the following link: https://github.com/octokit/endpoint.js/blob/main/src/parse.ts, at line 62:\n1. **Update the Regular Expression**: In the `parse.ts` file (or wherever the original regex is defined), replace the existing regular expression:\n```ts\nconst previewsFromAcceptHeader =\n          headers.accept.match(/[\\w-]+(?=-preview)/g) || ([] as string[]);\n```\nWith the updated one:\n```ts\nconst previewsFromAcceptHeader =\n          headers.accept.match(/(?<![\\w-])[\\w-]+(?=-preview)/g) || ([] as string[]);\n```\n\n2. **Test the Change**: After updating the regular expression, thoroughly test the application with both regular and malicious inputs to ensure that:\n- The functionality remains correct and the expected matches still occur.\n- The performance improves and the ReDoS vulnerability no longer occurs when handling large attack strings.\n3. **Deploy the Fix**: Once the solution is verified, deploy the fix to your production environment to protect against potential attacks.",
+      "severity": "medium",
+      "identifiers": [
+        {
+          "value": "GHSA-x4c5-c7rf-jjgv",
+          "type": "GHSA"
+        },
+        {
+          "value": "CVE-2025-25285",
+          "type": "CVE"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://github.com/octokit/endpoint.js/security/advisories/GHSA-x4c5-c7rf-jjgv"
+        },
+        {
+          "url": "https://github.com/octokit/endpoint.js/commit/6c9c5be033c450d436efb37de41b6470c22f7db8"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-25285"
+        },
+        {
+          "url": "https://github.com/octokit/endpoint.js/blob/main/src/parse.ts"
+        },
+        {
+          "url": "https://github.com/advisories/GHSA-x4c5-c7rf-jjgv"
+        }
+      ],
+      "published_at": "2025-02-14T17:56:18Z",
+      "updated_at": "2025-02-14T22:19:52Z",
+      "withdrawn_at": null,
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/endpoint"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 9.0.5, < 9.0.6",
+          "first_patched_version": {
+            "identifier": "9.0.6"
+          }
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "@octokit/endpoint"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": ">= 10.0.0, < 10.1.3",
+          "first_patched_version": {
+            "identifier": "10.1.3"
+          }
+        }
+      ],
+      "cvss_severities": {
+        "cvss_v3": {
+          "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+          "score": 5.3
+        },
+        "cvss_v4": {
+          "vector_string": null,
+          "score": 0.0
+        }
+      },
+      "epss": {
+        "percentage": 0.00072,
+        "percentile": 0.22669
+      },
+      "cvss": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "score": 5.3
+      },
+      "cwes": [
+        {
+          "cwe_id": "CWE-1333",
+          "name": "Inefficient Regular Expression Complexity"
+        }
+      ]
+    },
+    "security_vulnerability": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "@octokit/endpoint"
+      },
+      "severity": "medium",
+      "vulnerable_version_range": ">= 10.0.0, < 10.1.3",
+      "first_patched_version": {
+        "identifier": "10.1.3"
+      }
+    },
+    "url": "https://api.github.com/repos/brandlive1941/action-terraform/dependabot/alerts/8",
+    "html_url": "https://github.com/brandlive1941/action-terraform/security/dependabot/8",
+    "created_at": "2025-02-14T22:20:02Z",
+    "updated_at": "2025-02-14T22:20:02Z",
+    "dismissed_at": null,
+    "dismissed_by": null,
+    "dismissed_reason": null,
+    "dismissed_comment": null,
+    "fixed_at": null,
+    "auto_dismissed_at": "2025-02-14T22:20:02Z"
+  },
+  {
+    "number": 3,
+    "state": "auto_dismissed",
+    "dependency": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "cross-spawn"
+      },
+      "manifest_path": "package-lock.json",
+      "scope": "development",
+      "relationship": "transitive"
+    },
+    "security_advisory": {
+      "ghsa_id": "GHSA-3xgq-45jj-v275",
+      "cve_id": "CVE-2024-21538",
+      "summary": "Regular Expression Denial of Service (ReDoS) in cross-spawn",
+      "description": "Versions of the package cross-spawn before 7.0.5 are vulnerable to Regular Expression Denial of Service (ReDoS) due to improper input sanitization. An attacker can increase the CPU usage and crash the program by crafting a very large and well crafted string.",
+      "severity": "high",
+      "identifiers": [
+        {
+          "value": "GHSA-3xgq-45jj-v275",
+          "type": "GHSA"
+        },
+        {
+          "value": "CVE-2024-21538",
+          "type": "CVE"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-21538"
+        },
+        {
+          "url": "https://github.com/moxystudio/node-cross-spawn/pull/160"
+        },
+        {
+          "url": "https://github.com/moxystudio/node-cross-spawn/commit/5ff3a07d9add449021d806e45c4168203aa833ff"
+        },
+        {
+          "url": "https://github.com/moxystudio/node-cross-spawn/commit/640d391fde65388548601d95abedccc12943374f"
+        },
+        {
+          "url": "https://security.snyk.io/vuln/SNYK-JS-CROSSSPAWN-8303230"
+        },
+        {
+          "url": "https://github.com/moxystudio/node-cross-spawn/issues/165"
+        },
+        {
+          "url": "https://github.com/moxystudio/node-cross-spawn/commit/d35c865b877d2f9ded7c1ed87521c2fdb689c8dd"
+        },
+        {
+          "url": "https://security.snyk.io/vuln/SNYK-JAVA-ORGWEBJARSNPM-8366349"
+        },
+        {
+          "url": "https://github.com/advisories/GHSA-3xgq-45jj-v275"
+        }
+      ],
+      "published_at": "2024-11-08T06:30:47Z",
+      "updated_at": "2024-11-19T16:19:50Z",
+      "withdrawn_at": null,
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "cross-spawn"
+          },
+          "severity": "high",
+          "vulnerable_version_range": ">= 7.0.0, < 7.0.5",
+          "first_patched_version": {
+            "identifier": "7.0.5"
+          }
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "cross-spawn"
+          },
+          "severity": "high",
+          "vulnerable_version_range": "< 6.0.6",
+          "first_patched_version": {
+            "identifier": "6.0.6"
+          }
+        }
+      ],
+      "cvss_severities": {
+        "cvss_v3": {
+          "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+          "score": 7.5
+        },
+        "cvss_v4": {
+          "vector_string": null,
+          "score": 0.0
+        }
+      },
+      "epss": {
+        "percentage": 0.00132,
+        "percentile": 0.34283
+      },
+      "cvss": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
+        "score": 7.5
+      },
+      "cwes": [
+        {
+          "cwe_id": "CWE-1333",
+          "name": "Inefficient Regular Expression Complexity"
+        }
+      ]
+    },
+    "security_vulnerability": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "cross-spawn"
+      },
+      "severity": "high",
+      "vulnerable_version_range": ">= 7.0.0, < 7.0.5",
+      "first_patched_version": {
+        "identifier": "7.0.5"
+      }
+    },
+    "url": "https://api.github.com/repos/brandlive1941/action-terraform/dependabot/alerts/3",
+    "html_url": "https://github.com/brandlive1941/action-terraform/security/dependabot/3",
+    "created_at": "2024-12-04T22:33:02Z",
+    "updated_at": "2024-12-04T22:33:02Z",
+    "dismissed_at": null,
+    "dismissed_by": null,
+    "dismissed_reason": null,
+    "dismissed_comment": null,
+    "fixed_at": null,
+    "auto_dismissed_at": "2024-12-04T22:33:02Z"
+  },
+  {
+    "number": 2,
+    "state": "open",
+    "dependency": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "micromatch"
+      },
+      "manifest_path": "package-lock.json",
+      "scope": "runtime",
+      "relationship": "transitive"
+    },
+    "security_advisory": {
+      "ghsa_id": "GHSA-952p-6rrq-rcjv",
+      "cve_id": "CVE-2024-4067",
+      "summary": "Regular Expression Denial of Service (ReDoS) in micromatch",
+      "description": "The NPM package `micromatch` prior to version 4.0.8 is vulnerable to Regular Expression Denial of Service (ReDoS). The vulnerability occurs in `micromatch.braces()` in `index.js` because the pattern `.*` will greedily match anything. By passing a malicious payload, the pattern matching will keep backtracking to the input while it doesn't find the closing bracket. As the input size increases, the consumption time will also increase until it causes the application to hang or slow down. There was a merged fix but further testing shows the issue persisted prior to https://github.com/micromatch/micromatch/pull/266. This issue should be mitigated by using a safe pattern that won't start backtracking the regular expression due to greedy matching.\n",
+      "severity": "medium",
+      "identifiers": [
+        {
+          "value": "GHSA-952p-6rrq-rcjv",
+          "type": "GHSA"
+        },
+        {
+          "value": "CVE-2024-4067",
+          "type": "CVE"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-4067"
+        },
+        {
+          "url": "https://github.com/micromatch/micromatch/issues/243"
+        },
+        {
+          "url": "https://github.com/micromatch/micromatch/pull/247"
+        },
+        {
+          "url": "https://devhub.checkmarx.com/cve-details/CVE-2024-4067"
+        },
+        {
+          "url": "https://github.com/micromatch/micromatch/blob/2c56a8604b68c1099e7bc0f807ce0865a339747a/index.js#L448"
+        },
+        {
+          "url": "https://github.com/micromatch/micromatch/commit/500d5d6f42f0e8dfa1cb5464c6cb420b1b6aaaa0"
+        },
+        {
+          "url": "https://github.com/micromatch/micromatch/pull/266"
+        },
+        {
+          "url": "https://github.com/micromatch/micromatch/commit/03aa8052171e878897eee5d7bb2ae0ae83ec2ade"
+        },
+        {
+          "url": "https://advisory.checkmarx.net/advisory/CVE-2024-4067"
+        },
+        {
+          "url": "https://github.com/micromatch/micromatch/releases/tag/4.0.8"
+        },
+        {
+          "url": "https://github.com/advisories/GHSA-952p-6rrq-rcjv"
+        }
+      ],
+      "published_at": "2024-05-14T18:30:54Z",
+      "updated_at": "2024-08-28T13:12:27Z",
+      "withdrawn_at": null,
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "micromatch"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": "< 4.0.8",
+          "first_patched_version": {
+            "identifier": "4.0.8"
+          }
+        }
+      ],
+      "cvss_severities": {
+        "cvss_v3": {
+          "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+          "score": 5.3
+        },
+        "cvss_v4": {
+          "vector_string": null,
+          "score": 0.0
+        }
+      },
+      "epss": {
+        "percentage": 0.00366,
+        "percentile": 0.57697
+      },
+      "cvss": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L",
+        "score": 5.3
+      },
+      "cwes": [
+        {
+          "cwe_id": "CWE-1333",
+          "name": "Inefficient Regular Expression Complexity"
+        }
+      ]
+    },
+    "security_vulnerability": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "micromatch"
+      },
+      "severity": "medium",
+      "vulnerable_version_range": "< 4.0.8",
+      "first_patched_version": {
+        "identifier": "4.0.8"
+      }
+    },
+    "url": "https://api.github.com/repos/brandlive1941/action-terraform/dependabot/alerts/2",
+    "html_url": "https://github.com/brandlive1941/action-terraform/security/dependabot/2",
+    "created_at": "2024-09-09T05:36:20Z",
+    "updated_at": "2024-09-09T05:36:20Z",
+    "dismissed_at": null,
+    "dismissed_by": null,
+    "dismissed_reason": null,
+    "dismissed_comment": null,
+    "fixed_at": null,
+    "auto_dismissed_at": null
+  },
+  {
+    "number": 1,
+    "state": "auto_dismissed",
+    "dependency": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "tar"
+      },
+      "manifest_path": "package-lock.json",
+      "scope": "development",
+      "relationship": "transitive"
+    },
+    "security_advisory": {
+      "ghsa_id": "GHSA-f5x3-32g6-xq36",
+      "cve_id": "CVE-2024-28863",
+      "summary": "Denial of service while parsing a tar file due to lack of folders count validation",
+      "description": "## Description: \nDuring some analysis today on npm's `node-tar` package I came across the folder creation process, Basicly if you provide node-tar with a path like this `./a/b/c/foo.txt` it would create every folder and sub-folder here a, b and c until it reaches the last folder to create `foo.txt`, In-this case I noticed that there's no validation at all on the amount of folders being created, that said we're actually able to CPU and memory consume the system running node-tar and even crash the nodejs client within few seconds of running it using a path with too many sub-folders inside\n\n## Steps To Reproduce:\nYou can reproduce this issue by downloading the tar file I provided in the resources and using node-tar to extract it, you should get the same behavior as the video\n\n## Proof Of Concept:\nHere's a [video](https://hackerone-us-west-2-production-attachments.s3.us-west-2.amazonaws.com/3i7uojw8s52psar6pg8zkdo4h9io?response-content-disposition=attachment%3B%20filename%3D%22tar-dos-poc.webm%22%3B%20filename%2A%3DUTF-8%27%27tar-dos-poc.webm&response-content-type=video%2Fwebm&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQGK6FURQSWWGDXHA%2F20240312%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240312T080103Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDcaCXVzLXdlc3QtMiJHMEUCID3xYDc6emXVPOg8iVR5dVk0u3gguTPIDJ0OIE%2BKxj17AiEAi%2BGiay1gGMWhH%2F031fvMYnSsa8U7CnpZpxvFAYqNRwgqsQUIQBADGgwwMTM2MTkyNzQ4NDkiDAaj6OgUL3gg4hhLLCqOBUUrOgWSqaK%2FmxN6nKRvB4Who3LIyzswFKm9LV94GiSVFP3zXYA480voCmAHTg7eBL7%2BrYgV2RtXbhF4aCFMCN3qu7GeXkIdH7xwVMi9zXHkekviSKZ%2FsZtVVjn7RFqOCKhJl%2FCoiLQJuDuju%2FtfdTGZbEbGsPgKHoILYbRp81K51zeRL21okjsOehmypkZzq%2BoGrXIX0ynPOKujxw27uqdF4T%2BF9ynodq01vGgwgVBEjHojc4OKOfr1oW5b%2FtGVV59%2BOBVI1hqIKHRG0Ed4SWmp%2BLd1hazGuZPvp52szmegnOj5qr3ubppnKL242bX%2FuAnQKzKK0HpwolqXjsuEeFeM85lxhqHV%2B1BJqaqSHHDa0HUMLZistMRshRlntuchcFQCR6HBa2c8PSnhpVC31zMzvYMfKsI12h4HB6l%2FudrmNrvmH4LmNpi4dZFcio21DzKj%2FRjWmxjH7l8egDyG%2FIgPMY6Ls4IiN7aR1jijYTrBCgPUUHets3BFvqLzHtPFnG3B7%2FYRPnhCLu%2FgzvKN3F8l38KqeTNMHJaxkuhCvEjpFB2SJbi2QZqZZbLj3xASqXoogzbsyPp0Tzp0tH7EKDhPA7H6wwiZukXfFhhlYzP8on9fO2Ajz%2F%2BTDkDjbfWw4KNJ0cFeDsGrUspqQZb5TAKlUge7iOZEc2TZ5uagatSy9Mg08E4nImBSE5QUHDc7Daya1gyqrETMDZBBUHH2RFkGA9qMpEtNrtJ9G%2BPedz%2FpPY1hh9OCp9Pg1BrX97l3SfVzlAMRfNibhywq6qnE35rVnZi%2BEQ1UgBjs9jD%2FQrW49%2FaD0oUDojVeuFFryzRnQxDbKtYgonRcItTvLT5Y0xaK9P0u6H1197%2FMk3XxmjD9%2Fb%2BvBjqxAQWWkKiIxpC1oHEWK9Jt8UdJ39xszDBGpBqjB6Tvt5ePAXSyX8np%2FrBi%2BAPx06O0%2Ba7pU4NmH800EVXxxhgfj9nMw3CeoUIdxorVKtU2Mxw%2FLaAiPgxPS4rqkt65NF7eQYfegcSYDTm2Z%2BHPbz9HfCaVZ28Zqeko6sR%2F29ML4bguqVvHAM4mWPLNDXH33mjG%2BuzLi8e1BF7tNveg2X9G%2FRdcMkojwKYbu6xN3M6aX2alQg%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=1e8235d885f1d61529b7d6b23ea3a0780c300c91d86e925dd8310d5b661ddbe2) show-casing the exploit: \n\n## Impact\n\nDenial of service by crashing the nodejs client when attempting to parse a tar archive, make it run out of heap memory and consuming server CPU and memory resources\n\n## Report resources\n[payload.txt](https://hackerone-us-west-2-production-attachments.s3.us-west-2.amazonaws.com/1e83ayb5dd3350fvj3gst0mqixwk?response-content-disposition=attachment%3B%20filename%3D%22payload.txt%22%3B%20filename%2A%3DUTF-8%27%27payload.txt&response-content-type=text%2Fplain&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQGK6FURQSWWGDXHA%2F20240312%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240312T080103Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDcaCXVzLXdlc3QtMiJHMEUCID3xYDc6emXVPOg8iVR5dVk0u3gguTPIDJ0OIE%2BKxj17AiEAi%2BGiay1gGMWhH%2F031fvMYnSsa8U7CnpZpxvFAYqNRwgqsQUIQBADGgwwMTM2MTkyNzQ4NDkiDAaj6OgUL3gg4hhLLCqOBUUrOgWSqaK%2FmxN6nKRvB4Who3LIyzswFKm9LV94GiSVFP3zXYA480voCmAHTg7eBL7%2BrYgV2RtXbhF4aCFMCN3qu7GeXkIdH7xwVMi9zXHkekviSKZ%2FsZtVVjn7RFqOCKhJl%2FCoiLQJuDuju%2FtfdTGZbEbGsPgKHoILYbRp81K51zeRL21okjsOehmypkZzq%2BoGrXIX0ynPOKujxw27uqdF4T%2BF9ynodq01vGgwgVBEjHojc4OKOfr1oW5b%2FtGVV59%2BOBVI1hqIKHRG0Ed4SWmp%2BLd1hazGuZPvp52szmegnOj5qr3ubppnKL242bX%2FuAnQKzKK0HpwolqXjsuEeFeM85lxhqHV%2B1BJqaqSHHDa0HUMLZistMRshRlntuchcFQCR6HBa2c8PSnhpVC31zMzvYMfKsI12h4HB6l%2FudrmNrvmH4LmNpi4dZFcio21DzKj%2FRjWmxjH7l8egDyG%2FIgPMY6Ls4IiN7aR1jijYTrBCgPUUHets3BFvqLzHtPFnG3B7%2FYRPnhCLu%2FgzvKN3F8l38KqeTNMHJaxkuhCvEjpFB2SJbi2QZqZZbLj3xASqXoogzbsyPp0Tzp0tH7EKDhPA7H6wwiZukXfFhhlYzP8on9fO2Ajz%2F%2BTDkDjbfWw4KNJ0cFeDsGrUspqQZb5TAKlUge7iOZEc2TZ5uagatSy9Mg08E4nImBSE5QUHDc7Daya1gyqrETMDZBBUHH2RFkGA9qMpEtNrtJ9G%2BPedz%2FpPY1hh9OCp9Pg1BrX97l3SfVzlAMRfNibhywq6qnE35rVnZi%2BEQ1UgBjs9jD%2FQrW49%2FaD0oUDojVeuFFryzRnQxDbKtYgonRcItTvLT5Y0xaK9P0u6H1197%2FMk3XxmjD9%2Fb%2BvBjqxAQWWkKiIxpC1oHEWK9Jt8UdJ39xszDBGpBqjB6Tvt5ePAXSyX8np%2FrBi%2BAPx06O0%2Ba7pU4NmH800EVXxxhgfj9nMw3CeoUIdxorVKtU2Mxw%2FLaAiPgxPS4rqkt65NF7eQYfegcSYDTm2Z%2BHPbz9HfCaVZ28Zqeko6sR%2F29ML4bguqVvHAM4mWPLNDXH33mjG%2BuzLi8e1BF7tNveg2X9G%2FRdcMkojwKYbu6xN3M6aX2alQg%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=bad9fe731f05a63a950f99828125653a8c1254750fe0ca7be882e89ecdd449ae)\n[archeive.tar.gz](https://hackerone-us-west-2-production-attachments.s3.us-west-2.amazonaws.com/ymkuh4xnfdcf1soeyi7jc2x4yt2i?response-content-disposition=attachment%3B%20filename%3D%22archive.tar.gz%22%3B%20filename%2A%3DUTF-8%27%27archive.tar.gz&response-content-type=application%2Fx-tar&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQGK6FURQSWWGDXHA%2F20240312%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240312T080103Z&X-Amz-Expires=3600&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDcaCXVzLXdlc3QtMiJHMEUCID3xYDc6emXVPOg8iVR5dVk0u3gguTPIDJ0OIE%2BKxj17AiEAi%2BGiay1gGMWhH%2F031fvMYnSsa8U7CnpZpxvFAYqNRwgqsQUIQBADGgwwMTM2MTkyNzQ4NDkiDAaj6OgUL3gg4hhLLCqOBUUrOgWSqaK%2FmxN6nKRvB4Who3LIyzswFKm9LV94GiSVFP3zXYA480voCmAHTg7eBL7%2BrYgV2RtXbhF4aCFMCN3qu7GeXkIdH7xwVMi9zXHkekviSKZ%2FsZtVVjn7RFqOCKhJl%2FCoiLQJuDuju%2FtfdTGZbEbGsPgKHoILYbRp81K51zeRL21okjsOehmypkZzq%2BoGrXIX0ynPOKujxw27uqdF4T%2BF9ynodq01vGgwgVBEjHojc4OKOfr1oW5b%2FtGVV59%2BOBVI1hqIKHRG0Ed4SWmp%2BLd1hazGuZPvp52szmegnOj5qr3ubppnKL242bX%2FuAnQKzKK0HpwolqXjsuEeFeM85lxhqHV%2B1BJqaqSHHDa0HUMLZistMRshRlntuchcFQCR6HBa2c8PSnhpVC31zMzvYMfKsI12h4HB6l%2FudrmNrvmH4LmNpi4dZFcio21DzKj%2FRjWmxjH7l8egDyG%2FIgPMY6Ls4IiN7aR1jijYTrBCgPUUHets3BFvqLzHtPFnG3B7%2FYRPnhCLu%2FgzvKN3F8l38KqeTNMHJaxkuhCvEjpFB2SJbi2QZqZZbLj3xASqXoogzbsyPp0Tzp0tH7EKDhPA7H6wwiZukXfFhhlYzP8on9fO2Ajz%2F%2BTDkDjbfWw4KNJ0cFeDsGrUspqQZb5TAKlUge7iOZEc2TZ5uagatSy9Mg08E4nImBSE5QUHDc7Daya1gyqrETMDZBBUHH2RFkGA9qMpEtNrtJ9G%2BPedz%2FpPY1hh9OCp9Pg1BrX97l3SfVzlAMRfNibhywq6qnE35rVnZi%2BEQ1UgBjs9jD%2FQrW49%2FaD0oUDojVeuFFryzRnQxDbKtYgonRcItTvLT5Y0xaK9P0u6H1197%2FMk3XxmjD9%2Fb%2BvBjqxAQWWkKiIxpC1oHEWK9Jt8UdJ39xszDBGpBqjB6Tvt5ePAXSyX8np%2FrBi%2BAPx06O0%2Ba7pU4NmH800EVXxxhgfj9nMw3CeoUIdxorVKtU2Mxw%2FLaAiPgxPS4rqkt65NF7eQYfegcSYDTm2Z%2BHPbz9HfCaVZ28Zqeko6sR%2F29ML4bguqVvHAM4mWPLNDXH33mjG%2BuzLi8e1BF7tNveg2X9G%2FRdcMkojwKYbu6xN3M6aX2alQg%3D%3D&X-Amz-SignedHeaders=host&X-Amz-Signature=5e2c0d4b4de40373ac0fe91908c2659141a6dd4ab850271cc26042a3885c82ea)\n\n## Note\nThis report was originally reported to GitHub bug bounty program, they asked me to report it to you a month ago",
+      "severity": "medium",
+      "identifiers": [
+        {
+          "value": "GHSA-f5x3-32g6-xq36",
+          "type": "GHSA"
+        },
+        {
+          "value": "CVE-2024-28863",
+          "type": "CVE"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://github.com/isaacs/node-tar/security/advisories/GHSA-f5x3-32g6-xq36"
+        },
+        {
+          "url": "https://nvd.nist.gov/vuln/detail/CVE-2024-28863"
+        },
+        {
+          "url": "https://github.com/isaacs/node-tar/commit/fe8cd57da5686f8695415414bda49206a545f7f7"
+        },
+        {
+          "url": "https://security.netapp.com/advisory/ntap-20240524-0005"
+        },
+        {
+          "url": "https://github.com/advisories/GHSA-f5x3-32g6-xq36"
+        }
+      ],
+      "published_at": "2024-03-22T16:57:05Z",
+      "updated_at": "2024-06-10T18:30:53Z",
+      "withdrawn_at": null,
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "node-tar"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": "< 6.2.1",
+          "first_patched_version": {
+            "identifier": "6.2.1"
+          }
+        },
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "tar"
+          },
+          "severity": "medium",
+          "vulnerable_version_range": "< 6.2.1",
+          "first_patched_version": {
+            "identifier": "6.2.1"
+          }
+        }
+      ],
+      "cvss_severities": {
+        "cvss_v3": {
+          "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+          "score": 6.5
+        },
+        "cvss_v4": {
+          "vector_string": null,
+          "score": 0.0
+        }
+      },
+      "epss": {
+        "percentage": 0.00205,
+        "percentile": 0.43032
+      },
+      "cvss": {
+        "vector_string": "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H",
+        "score": 6.5
+      },
+      "cwes": [
+        {
+          "cwe_id": "CWE-400",
+          "name": "Uncontrolled Resource Consumption"
+        }
+      ]
+    },
+    "security_vulnerability": {
+      "package": {
+        "ecosystem": "npm",
+        "name": "tar"
+      },
+      "severity": "medium",
+      "vulnerable_version_range": "< 6.2.1",
+      "first_patched_version": {
+        "identifier": "6.2.1"
+      }
+    },
+    "url": "https://api.github.com/repos/brandlive1941/action-terraform/dependabot/alerts/1",
+    "html_url": "https://github.com/brandlive1941/action-terraform/security/dependabot/1",
+    "created_at": "2024-04-11T15:34:22Z",
+    "updated_at": "2024-04-11T15:34:22Z",
+    "dismissed_at": null,
+    "dismissed_by": null,
+    "dismissed_reason": null,
+    "dismissed_comment": null,
+    "fixed_at": null,
+    "auto_dismissed_at": "2024-04-11T15:34:22Z"
+  }
+]
