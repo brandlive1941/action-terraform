@@ -42,7 +42,7 @@ jobs:
             let dependencyNames = ${{ steps.dependabot-metadata.outputs.dependency-names }}.split(',').map(name => name.trim());
             for (const alert of alerts.data) {
               console.log(`Checking alert for dependency: ${alert.dependency.package.name}`);
-              if (alert.dependency.package.name.includes(dependencyNames)) {)) {
+              if (alert.dependency.package.name.includes(dependencyNames)) {
                 
                 severity = alert.severity;
                 break;
