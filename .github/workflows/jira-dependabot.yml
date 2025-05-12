@@ -44,7 +44,7 @@ jobs:
             console.log(`Dependency name: ${dependencyName}`);
             for (const alert of alerts.data) {
               console.log(`Checking alert for dependency: ${alert.security_advisory.dependency.alert_number}`);
-              if (dependencyNames.includes(${dependencyName})) {)) {
+              if (dependencyNames.includes(${dependencyName})) {
                 cvssScore = alert.security_advisory.cvss.score;
                 break;
               }
