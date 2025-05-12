@@ -39,10 +39,10 @@ jobs:
 
             let severity = null;
             console.log(`Dependency names: ${{ steps.dependabot-metadata.outputs.dependency-names }}`);
-            let dependencyNames = ${{ steps.dependabot-metadata.outputs.dependency-names }}.split(',').map(name => name.trim());
+            const dependencyNames = ${{ steps.dependabot-metadata.outputs.dependency-names }}
             for (const alert of alerts.data) {
               console.log(`Checking alert for dependency: ${alert.dependency.package.name}`);
-              if (alert.dependency.package.name.includes(dependencyNames[0])) {
+              if (alert.dependency.package.name.includes(dependencyNames)) {
                 
                 severity = alert.severity;
                 break;
