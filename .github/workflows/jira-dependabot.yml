@@ -24,7 +24,7 @@ jobs:
           skip-verification: true
 
       - uses: actions/github-script@v7
-        id: get-cvss-score
+        id: get-severity
         with:
           github-token: "${{ secrets.JIRA_GH_TOKEN }}"
           result-encoding: string
@@ -38,45 +38,22 @@ jobs:
               per_page: 100,
             });
 
-            let cvssScore = null;
-            let dependencyName = ${{ steps.dependabot-metadata.outputs.dependency_name }};
+            let severity = null;
 
-            console.log(`Dependency name: ${dependencyName}`);
             for (const alert of alerts.data) {
-              console.log(`Checking alert for dependency: ${alert.security_advisory.dependency.alert_number}`);
-              if (dependencyNames.includes(${dependencyName})) {
-                cvssScore = alert.security_advisory.cvss.score;
+              console.log(`Checking alert for dependency: ${alert.dependency.package.name}`);
+              if (dependencyNames.includes(${{ steps.dependabot-metadata.outputs.dependency_name }})) {
+                
+                severity = alert.severity;
                 break;
               }
             }
 
-            if (cvssScore !== null) {
-              return { cvssScore };
+            if (severity !== null) {
+              return { severity };
             } else {
               throw new Error("No matching Dependabot alert found for the given dependencies.");
             }
-
-      - name: Issue Classification
-        id: issue-classification
-        run: |
-          echo "CVSS score: ${{ steps.get-cvss-score.outputs.result }}"
-          if [ "${{ steps.dependabot-metadata.outputs.cvss }}" < "4" ]; then
-            echo "CVSS score is less than 4.0"
-            echo "class=Low" >> "$GITHUB_OUTPUT"
-            echo "priority=2" >> "$GITHUB_OUTPUT"
-          elif [ "${{ steps.dependabot-metadata.outputs.cvss }}" < "7" ]; then
-            echo "CVSS score is between 4.0 and 7.0"
-            echo "class=Medium" >> "$GITHUB_OUTPUT"
-            echo "priority=3" >> "$GITHUB_OUTPUT"
-          elif [ "${{ steps.dependabot-metadata.outputs.cvss }}" < "9" ]; then
-            echo "CVSS score is greater than or equal to 7.0"
-            echo "class=High" >> "$GITHUB_OUTPUT"
-            echo "priority=4" >> "$GITHUB_OUTPUT"
-          else
-            echo "CVSS score is greater than or equal to 9.0"
-            echo "class=Critical" >> "$GITHUB_OUTPUT"
-            echo "priority=5" >> "$GITHUB_OUTPUT"
-          fi
 
       - name: Description Formatter
         id: description-formatter
@@ -86,7 +63,7 @@ jobs:
           PR: ${{ github.event.pull_request.html_url }}
           Branch: ${{ github.head_ref }}
           Repository: ${{ github.repository }}
-          CVSS Classification: ${{ steps.issue-classification.outputs.class }}
+          CVSS Classification: ${{ steps.get-severity.outputs.result }}
           CVSS Score: ${{ steps.dependabot-metadata.outputs.cvss }}
           To confirm the fix, apply the patch and provide testing steps to verify no existing features are broken.
           EOF
@@ -103,5 +80,5 @@ jobs:
           project: ${{ vars.JIRA_PROJECT }} # Replace with your Jira project key
           summary: "${{ steps.issue-classification.outputs.class }} [Dependabot] Security update for ${{ github.repository }}" 
           description: "${{ steps.description-formatter.outputs.description }}"
-          priority: ${{ steps.issue-classification.outputs.priority }} # Or "High", "Low", etc.
+          priority: ${{ steps.get-severity.outputs.result }} # Or "High", "Low", etc.
           label: "dependabot" # Optional: Add a label to the Jira ticket
