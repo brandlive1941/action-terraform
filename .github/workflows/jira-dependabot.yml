@@ -4,6 +4,7 @@ on:
   pull_request_target:
     branches:
       - main # Or your default branch (e.g., main, master)
+  workflow_dispatch:
 
 jobs:
   create_jira_tickets:
@@ -22,10 +23,40 @@ jobs:
           skip-commit-verification: true
           skip-verification: true
 
+      - uses: actions/github-script@v7
+        id: get-cvss-score
+        with:
+          github-token: "${{ secrets.JIRA_GH_TOKEN }}"
+          result-encoding: string
+          retries: 3
+          retry-exempt-status-codes: 400,401
+          script: |
+            const dependencyNames = JSON.parse(process.env.DEPENDENCY_NAMES || "[]");
+            const alerts = await github.rest.dependabot.listAlertsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              per_page: 100,
+            });
+
+            let cvssScore = null;
+
+            for (const alert of alerts.data) {
+              if (dependencyNames.includes(${{ steps.dependabot-metadata.outputs.dependency_name }})) {
+                cvssScore = alert.security_advisory.cvss.score;
+                break;
+              }
+            }
+
+            if (cvssScore !== null) {
+              return { cvssScore };
+            } else {
+              throw new Error("No matching Dependabot alert found for the given dependencies.");
+            }
+
       - name: Issue Classification
         id: issue-classification
         run: |
-          echo "CVSS score: ${{ steps.dependabot-metadata.outputs.cvss }}"
+          echo "CVSS score: ${{ steps.get-cvss-score.outputs.result }}"
           if [ "${{ steps.dependabot-metadata.outputs.cvss }}" < "4" ]; then
             echo "CVSS score is less than 4.0"
             echo "class=Low" >> "$GITHUB_OUTPUT"
