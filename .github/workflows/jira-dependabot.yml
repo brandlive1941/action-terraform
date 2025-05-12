@@ -36,11 +36,15 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               per_page: 100,
+              # headers: {
+              #     'accept': 'applications/vnd.github+json'
+              #   },
             });
 
             let cvssScore = null;
 
             for (const alert of alerts.data) {
+              console.log(`Checking alert for dependency: ${alert.security_advisory.dependency.name}`);
               if (dependencyNames.includes(${{ steps.dependabot-metadata.outputs.dependency_name }})) {
                 cvssScore = alert.security_advisory.cvss.score;
                 break;
