@@ -31,7 +31,6 @@ jobs:
           retries: 3
           retry-exempt-status-codes: 400,401
           script: |
-            const dependencyNames = JSON.parse(process.env.DEPENDENCY_NAMES || "[]");
             const alerts = await github.rest.dependabot.listAlertsForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -40,10 +39,10 @@ jobs:
 
             let severity = null;
             console.log(`Dependency names: ${{ steps.dependabot-metadata.outputs.dependency-names }}`);
-
+            let dependencyNames = ${{ steps.dependabot-metadata.outputs.dependency-names }}.split(',').map(name => name.trim());
             for (const alert of alerts.data) {
               console.log(`Checking alert for dependency: ${alert.dependency.package.name}`);
-              if (alert.dependency.package.name.includes(${{ steps.dependabot-metadata.outputs.dependency-names }})) {
+              if (alert.dependency.package.name.includes(dependencyNames)) {)) {
                 
                 severity = alert.severity;
                 break;
