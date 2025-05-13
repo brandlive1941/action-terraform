@@ -45,7 +45,7 @@ jobs:
               if (alert.dependency.package.name.includes(dependencyNames)) {
                 
                 severity = alert.security_advisory.severity.toUpperCase();
-                description = alert.security_advisory.description.replace(/`/g, "");
+                description = alert.security_advisory.description.replace(/`|"|'/g, "");
                 cvss_score = alert.security_advisory.cvss.score;
                 console.log(`Found matching alert with severity: ${severity}`);
                 console.log(`Description: ${description}`);
