@@ -56,6 +56,22 @@ jobs:
 
             if (severity !== null) {
               core.setOutput('severity', severity);
+              switch (severity) {
+                case 'low':
+                  core.setOutput('priority', 'Low');
+                  break;
+                case 'medium':
+                  core.setOutput('priority', 'Medium');
+                  break;
+                case 'high':
+                  core.setOutput('priority', 'High');
+                  break;
+                case 'critical':
+                  core.setOutput('priority', 'Critical');
+                  break;
+                default:
+                  core.setOutput('priority', 'Medium');
+              };
               core.setOutput('description', description);
               core.setOutput('cvss', cvss_score);
             } else {
@@ -69,6 +85,7 @@ jobs:
           BRANCH: ${{ github.head_ref }}
           REPO: ${{ github.repository }}
           SEVERITY: ${{ steps.get-alert.outputs.severity }}
+          PRIORITY: ${{ steps.get-alert.outputs.priority }}
           CVSS: ${{ steps.get-alert.outputs.cvss }}
           DESCRIPTION: ${{ steps.get-alert.outputs.description }}
         run: |
@@ -94,5 +111,5 @@ jobs:
           project: ${{ vars.JIRA_PROJECT }} # Replace with your Jira project key
           summary: "${{ steps.get-alert.outputs.severity }} severity [Dependabot] Security update for ${{ github.repository }}" 
           description: "${{ steps.description-formatter.outputs.description }}"
-          priority: ${{ steps.get-alert.outputs.result }} # Or "High", "Low", etc.
+          priority: ${{ steps.get-alert.outputs.priority}} # Or "High", "Low", etc.
           label: "dependabot" # Optional: Add a label to the Jira ticket
