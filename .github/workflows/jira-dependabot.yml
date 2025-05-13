@@ -45,7 +45,7 @@ jobs:
               if (alert.dependency.package.name.includes(dependencyNames)) {
                 
                 severity = alert.security_advisory.severity.toUpperCase();
-                description = alert.security_advisory.description;
+                description = alert.security_advisory.description.replace(/`/g, "");
                 cvss_score = alert.security_advisory.cvss.score;
                 console.log(`Found matching alert with severity: ${severity}`);
                 console.log(`Description: ${description}`);
@@ -62,17 +62,23 @@ jobs:
               throw new Error("No matching Dependabot alert found for the given dependencies.");
             }
             
-
       - name: Description Formatter
         id: description-formatter
+        env:
+          PR: ${{ github.event.pull_request.html_url }}
+          BRANCH: ${{ github.head_ref }}
+          REPO: ${{ github.repository }}
+          SEVERITY: ${{ steps.get-alert.outputs.severity }}
+          CVSS: ${{ steps.get-alert.outputs.cvss }}
+          DESCRIPTION: ${{ steps.get-alert.outputs.description }}
         run: |
           description=$(cat << EOF
           Dependabot has created a pull request to update dependencies.
-          PR: ${{ github.event.pull_request.html_url }}
-          Branch: ${{ github.head_ref }}
-          CVSS Classification: ${{ steps.get-alert.outputs.severity }}
-          CVSS Score: ${{ steps.get-alert.outputs.cvss }}
-          Description: ${{ steps.get-alert.outputs.description }}
+          PR: $PR
+          Branch: $BRANCH
+          Severity: $SEVERITY
+          CVSS Score: $CVSS
+          Description: $DESCRIPTION
           To confirm the fix, apply the patch and provide testing steps to verify no existing features are broken.
           EOF
           )
