@@ -57,16 +57,16 @@ jobs:
             if (severity !== null) {
               core.setOutput('severity', severity);
               switch (severity) {
-                case 'low':
+                case 'LOW':
                   core.setOutput('priority', 'P3');
                   break;
-                case 'medium':
+                case 'MEDIUM':
                   core.setOutput('priority', 'P2');
                   break;
-                case 'high':
+                case 'HIGH':
                   core.setOutput('priority', 'P1');
                   break;
-                case 'critical':
+                case 'CRITICAL':
                   core.setOutput('priority', 'P0');
                   break;
               };
