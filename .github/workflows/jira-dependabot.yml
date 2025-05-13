@@ -58,19 +58,17 @@ jobs:
               core.setOutput('severity', severity);
               switch (severity) {
                 case 'low':
-                  core.setOutput('priority', 'Low');
+                  core.setOutput('priority', 'P3');
                   break;
                 case 'medium':
-                  core.setOutput('priority', 'Medium');
+                  core.setOutput('priority', 'P2');
                   break;
                 case 'high':
-                  core.setOutput('priority', 'High');
+                  core.setOutput('priority', 'P1');
                   break;
                 case 'critical':
-                  core.setOutput('priority', 'Critical');
+                  core.setOutput('priority', 'P0');
                   break;
-                default:
-                  core.setOutput('priority', 'Medium');
               };
               core.setOutput('description', description);
               core.setOutput('cvss', cvss_score);
