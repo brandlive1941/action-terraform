@@ -58,16 +58,16 @@ jobs:
               core.setOutput('severity', severity);
               switch (severity) {
                 case 'LOW':
-                  core.setOutput('priority', 'Low');
+                  core.setOutput('priority', 'P3');
                   break;
                 case 'MEDIUM':
-                  core.setOutput('priority', 'Medium');
+                  core.setOutput('priority', 'P2');
                   break;
                 case 'HIGH':
-                  core.setOutput('priority', 'High');
+                  core.setOutput('priority', 'P1');
                   break;
                 case 'CRITICAL':
-                  core.setOutput('priority', 'Highest');
+                  core.setOutput('priority', 'P0');
                   break;
               };
               core.setOutput('description', description);
@@ -110,4 +110,4 @@ jobs:
           summary: "${{ steps.get-alert.outputs.severity }} severity [Dependabot] Security update for ${{ github.repository }}" 
           description: "${{ steps.description-formatter.outputs.description }}"
           priority: ${{ steps.get-alert.outputs.priority}} # Or "High", "Low", etc.
-          label: "dependabot" # Optional: Add a label to the Jira ticket
+          label: "security" # Optional: Add a label to the Jira ticket
