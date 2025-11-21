@@ -44,6 +44,9 @@ inputs:
   DATADOG_PRINCIPAL_ACCOUNT:
     description: 'Datadog Principal Account'
     required: false
+  SLACK_WORKSPACE_ID:
+    description: 'Slack Workspace ID'
+    required: false
   ARGS: 
     description: 'Terraform Args'
     required: false
@@ -102,6 +105,7 @@ runs:
       TF_VAR_DATADOG_API_KEY: ${{ inputs.DATADOG_API_KEY }}
       TF_VAR_DATADOG_APP_KEY: ${{ inputs.DATADOG_APP_KEY }}
       TF_VAR_DATADOG_PRINCIPAL_ACCOUNT: ${{ inputs.DATADOG_PRINCIPAL_ACCOUNT }}
+      TF_VAR_SLACK_WORKSPACE_ID: ${{ inputs.SLACK_WORKSPACE_ID }}
     run: |
       set +e
       cd ${{ inputs.directory }} && \
