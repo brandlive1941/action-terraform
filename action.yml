@@ -143,6 +143,18 @@ runs:
       fi
     shell: bash
 
+  - name: truncate plan
+    uses: mathiasvr/command-output@v2.0.0
+    id: truncate
+    with:
+      run: |
+        maxsize=65000
+        actualsize=$(wc -c < ${{ inputs.DIRECTORY }}/plan.txt)
+        if [ $actualsize -gt $maxsize ]; then
+            truncate --size=$maxsize ${{ inputs.DIRECTORY }}/plan.txt
+            echo -n $'\n\n-- truncated due to max PR comment length, check logs from step: Create Terraform plan --' >> ${{ inputs.DIRECTORY }}/plan.txt
+        fi
+
   - uses: mshick/add-pr-comment@v2
     if: steps.plan_delta.outputs.post_plan == 'true'
     id: post_plan
@@ -155,6 +167,8 @@ runs:
             ```diff
             ${{ steps.plan_output.outputs.plan }}
             ```
+      message-failure: "Changes too large for PR comment."
+    
 
   - id: apply
     if: inputs.ACTION == 'apply'
