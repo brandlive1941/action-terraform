@@ -122,9 +122,11 @@ runs:
 
   - id: plan_output
     if: inputs.ACTION == 'plan'
+    env:
+      PLAN_OUTPUT: ${{ steps.plan.outputs.stdout || steps.plan.outputs.stderr }}
     run: |
       echo -e '## ${{ inputs.DIRECTORY }} plan\n' > ${{ inputs.DIRECTORY }}/plan.txt
-      echo '${{ steps.plan.outputs.stdout || steps.plan.outputs.stderr }}' \
+      printf '%s' "$PLAN_OUTPUT" \
       | sed -E 's/^([[:space:]]+)([-+])/\2\1/g' >> ${{ inputs.DIRECTORY }}/plan.txt
       maxsize=65000
       actualsize=$(wc -c < ${{ inputs.DIRECTORY }}/plan.txt)
