@@ -47,8 +47,11 @@ inputs:
   SLACK_WORKSPACE_ID:
     description: 'Slack Workspace ID'
     required: false
-  ARGS: 
+  ARGS:
     description: 'Terraform Args'
+    required: false
+  PR_TOKEN:
+    description: 'GitHub token for posting PR comments (needs pull-requests: write). Defaults to GITHUB_TOKEN.'
     required: false
 
 runs:
@@ -163,7 +166,7 @@ runs:
     id: post_plan
     with:
       message-id: ${{ inputs.DIRECTORY }}
-      repo-token: ${{ inputs.GITHUB_TOKEN }}
+      repo-token: ${{ inputs.PR_TOKEN || inputs.GITHUB_TOKEN }}
       message: |
             ## ${{ inputs.DIRECTORY }}
             ```diff
