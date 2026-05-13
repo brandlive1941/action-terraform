@@ -162,7 +162,7 @@ runs:
     if: steps.plan_delta.outputs.post_plan == 'true'
     id: post_plan
     with:
-      allow-repeats: true
+      message-id: ${{ inputs.DIRECTORY }}
       repo-token: ${{ inputs.GITHUB_TOKEN }}
       message: |
             ## ${{ inputs.DIRECTORY }}
