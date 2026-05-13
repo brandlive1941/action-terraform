@@ -158,7 +158,7 @@ runs:
       run: |
 
 
-  - uses: mshick/add-pr-comment@v2
+  - uses: mshick/add-pr-comment@v3
     if: steps.plan_delta.outputs.post_plan == 'true'
     id: post_plan
     with:
