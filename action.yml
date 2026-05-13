@@ -164,7 +164,6 @@ runs:
     with:
       allow-repeats: true
       repo-token: ${{ inputs.GITHUB_TOKEN }}
-      repo-token-user-login: 'github-actions[bot]'
       message: |
             ## ${{ inputs.DIRECTORY }}
             ```diff
