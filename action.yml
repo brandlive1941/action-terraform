@@ -111,9 +111,18 @@ runs:
       TF_VAR_SLACK_WORKSPACE_ID: ${{ inputs.SLACK_WORKSPACE_ID }}
     run: |
       set +e
-      cd ${{ inputs.directory }} && \
+      cd ${{ inputs.directory }} || exit 1
       terraform plan -input=false -no-color -out=tfplan ${{ inputs.ARGS }}
-      terraform show -no-color tfplan
+      PLAN_EXIT=$?
+      # Exit on a real plan error so we don't run `show` on a missing plan file.
+      # Allow 0 (no changes) and 2 (changes, with -detailed-exitcode) to proceed.
+      if [ $PLAN_EXIT -ne 0 ] && [ $PLAN_EXIT -ne 2 ]; then
+        exit $PLAN_EXIT
+      fi
+      # Write the full plan to a file rather than relying on the step's captured
+      # stdout output. A large plan passed via env var (PLAN_OUTPUT) exceeds the
+      # OS argument-list limit and fails the next step with "Argument list too long".
+      terraform show -no-color tfplan > plan_show.txt
     shell: bash
 
   - name: verify terraform plan
@@ -125,12 +134,12 @@ runs:
 
   - id: plan_output
     if: inputs.ACTION == 'plan'
-    env:
-      PLAN_OUTPUT: ${{ steps.plan.outputs.stdout || steps.plan.outputs.stderr }}
     run: |
+      # Read the plan from the file written by the plan step. Passing it via an env
+      # var (PLAN_OUTPUT) overflows the OS argument list on large plans and fails the
+      # step with "Argument list too long" before truncation can run.
       echo -e '## ${{ inputs.DIRECTORY }} plan\n' > ${{ inputs.DIRECTORY }}/plan.txt
-      printf '%s' "$PLAN_OUTPUT" \
-      | sed -E 's/^([[:space:]]+)([-+])/\2\1/g' >> ${{ inputs.DIRECTORY }}/plan.txt
+      sed -E 's/^([[:space:]]+)([-+])/\2\1/g' ${{ inputs.DIRECTORY }}/plan_show.txt >> ${{ inputs.DIRECTORY }}/plan.txt
       maxsize=65000
       actualsize=$(wc -c < ${{ inputs.DIRECTORY }}/plan.txt)
       if [ $actualsize -gt $maxsize ]; then
