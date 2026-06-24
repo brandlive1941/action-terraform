@@ -111,8 +111,14 @@ runs:
       TF_VAR_SLACK_WORKSPACE_ID: ${{ inputs.SLACK_WORKSPACE_ID }}
     run: |
       set +e
-      cd ${{ inputs.directory }}
+      cd ${{ inputs.directory }} || exit 1
       terraform plan -input=false -no-color -out=tfplan ${{ inputs.ARGS }}
+      PLAN_EXIT=$?
+      # Exit on a real plan error so we don't run `show` on a missing plan file.
+      # Allow 0 (no changes) and 2 (changes, with -detailed-exitcode) to proceed.
+      if [ $PLAN_EXIT -ne 0 ] && [ $PLAN_EXIT -ne 2 ]; then
+        exit $PLAN_EXIT
+      fi
       # Write the full plan to a file rather than relying on the step's captured
       # stdout output. A large plan passed via env var (PLAN_OUTPUT) exceeds the
       # OS argument-list limit and fails the next step with "Argument list too long".
