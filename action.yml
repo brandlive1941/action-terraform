@@ -53,6 +53,19 @@ inputs:
   PR_TOKEN:
     description: 'GitHub token for posting PR comments (needs pull-requests: write). Defaults to GITHUB_TOKEN.'
     required: false
+  PLAN_S3_URI:
+    description: >-
+      Optional s3:// URI for the saved plan file (tfplan), e.g.
+      s3://events-prod-tf-remote-state/plans/accounts/events-prod/core/<sha>/tfplan
+
+      When set on ACTION=plan, the generated plan is uploaded there.
+      When set on ACTION=apply, that object is downloaded and applied INSTEAD of
+      re-planning -- so what applies is exactly what was reviewed, and terraform
+      refuses it ("Saved plan is stale") if state moved in between.
+
+      Leave unset to keep the previous behaviour: apply re-plans, then applies the
+      plan it just made. Existing callers are unaffected.
+    required: false
 
 runs:
   using: "composite"
@@ -95,6 +108,9 @@ runs:
     shell: bash
 
   - id: plan
+    # Skipped when applying a saved plan -- re-planning would discard the very
+    # thing that was reviewed.
+    if: inputs.ACTION == 'plan' || inputs.PLAN_S3_URI == ''
     continue-on-error: true
     env:
       TERRAFORM_VERSION: ${{ inputs.TERRAFORM_VERSION }}
@@ -124,6 +140,17 @@ runs:
       # OS argument-list limit and fails the next step with "Argument list too long".
       terraform show -no-color tfplan > plan_show.txt
     shell: bash
+
+  - name: persist plan to s3
+    if: inputs.ACTION == 'plan' && inputs.PLAN_S3_URI != '' && steps.plan.outcome == 'success'
+    shell: bash
+    run: |
+      set -euo pipefail
+      # A plan file carries the same plaintext resource attributes terraform state
+      # does, which is why the state bucket is the right home and a GitHub artifact
+      # (readable by anyone with repo read) is not. SSE-KMS matches the bucket default.
+      aws s3 cp "${{ inputs.DIRECTORY }}/tfplan" "${{ inputs.PLAN_S3_URI }}" --sse aws:kms
+      echo "uploaded plan -> ${{ inputs.PLAN_S3_URI }}"
 
   - name: verify terraform plan
     if: steps.plan.outcome == 'failure'
@@ -183,6 +210,21 @@ runs:
             ```
       message-failure: "Changes too large for PR comment."
     
+
+  - name: fetch saved plan from s3
+    if: inputs.ACTION == 'apply' && inputs.PLAN_S3_URI != ''
+    shell: bash
+    run: |
+      set -euo pipefail
+      # Fail loudly rather than falling back to a fresh plan: a silent re-plan is
+      # precisely the behaviour this input exists to remove.
+      if ! aws s3 cp "${{ inputs.PLAN_S3_URI }}" "${{ inputs.DIRECTORY }}/tfplan"; then
+        echo "::error::No saved plan at ${{ inputs.PLAN_S3_URI }}." >&2
+        echo "Refusing to re-plan -- apply must run the plan that was reviewed." >&2
+        echo "Re-run the plan for this commit, or clear PLAN_S3_URI to allow re-planning." >&2
+        exit 1
+      fi
+      echo "applying saved plan from ${{ inputs.PLAN_S3_URI }}"
 
   - id: apply
     if: inputs.ACTION == 'apply'
