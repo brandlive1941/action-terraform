@@ -29,6 +29,13 @@ inputs:
   NPM_TOKEN: 
     description: 'NPM Token'
     required: false
+  MODULE_READ_TOKEN:
+    description: >-
+      Token with read access to private repositories holding terraform modules.
+      Terraform fetches module sources with git, which has no credentials here;
+      GITHUB_TOKEN only reaches the calling repository, so a module whose source
+      is a different private repo 404s at init. Leave unset for public modules.
+    required: false
   GITHUB_APP_CLOUDBUILD_INSTALLATION_ID: 
     description: 'Github App Cloud Build Installation ID'
     required: false
@@ -73,6 +80,17 @@ runs:
   - uses: hashicorp/setup-terraform@v3
     with:
       terraform_version: ${{ inputs.TERRAFORM_VERSION}}
+
+  # Must precede init: that is where module sources are fetched. Passed via env
+  # rather than interpolated into the command so the token is not rendered into
+  # the step's log line. Unset, this is skipped and nothing changes.
+  - name: authenticate git for private module sources
+    if: inputs.MODULE_READ_TOKEN != ''
+    env:
+      MODULE_READ_TOKEN: ${{ inputs.MODULE_READ_TOKEN }}
+    run: |
+      git config --global url."https://x-access-token:${MODULE_READ_TOKEN}@github.com/".insteadOf "https://github.com/"
+    shell: bash
 
   - id: init
     run: |
